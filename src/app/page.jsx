@@ -2,15 +2,15 @@ import AboutMe from '@/components/AboutMe';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import Head from 'next/head';
 
 function HomePage() {
   return (
     <>
-      <header>
-        <meta charSet='UTF-8' />
+     <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Mi Portafolio</title>
-      </header>
+      </Head>
 
       <main className='flex flex-col p-12'>
         <h1 className='font-montserrat text-8xl text-whiteCream mt-16'>

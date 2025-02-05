@@ -15,7 +15,9 @@ export default {
       },
       colors: {
         'green': "#C1F774",
+        'bgGreen': "#909E7B",
         'purple': "#EA91FF",
+        'bgPurple': "#705876",
         'blackLight': "#1A1A1A",
         'whiteCream': "#FCFCFC",
       },
