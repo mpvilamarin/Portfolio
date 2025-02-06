@@ -6,17 +6,17 @@ const AboutMe = () => {
     { iconSrc: '/icons/illustrator.png', percentage: 60, name: 'Illustrator' },
     { iconSrc: '/icons/indesign.png', percentage: 40, name: 'InDesign' },
     { iconSrc: '/icons/premiere.png', percentage: 40, name: 'Premiere' },
-    { iconSrc: '/icons/xd.png', percentage: 50, name: 'XD' },
     { iconSrc: '/icons/photoshop.png', percentage: 40, name: 'Photoshop' },
-    { iconSrc: '/icons/afterEffects.png', percentage: 40, name: 'After Effects' },
-    { iconSrc: '/icons/figma.png', percentage: 40, name: 'Figma' },
+    { iconSrc: '/icons/afterEffects.png', percentage: 30, name: 'After Effects' },
+    { iconSrc: '/icons/figma.png', percentage: 50, name: 'Figma' },
   ];
 
   const techSkills = [
-    { iconSrc: '/icons/html.png', percentage: 90, name: 'HTML' },
-    { iconSrc: '/icons/css.png', percentage: 80, name: 'CSS' },
-    { iconSrc: '/icons/javaScript.png', percentage: 70, name: 'JavaScript' },
-    { iconSrc: '/icons/react.png', percentage: 80, name: 'React' },
+    { iconSrc: '/icons/html.png', percentage: 70, name: 'HTML' },
+    { iconSrc: '/icons/css.png', percentage: 70, name: 'CSS' },
+    { iconSrc: '/icons/tailwind.png', percentage: 60, name: 'Tailwind' },
+    { iconSrc: '/icons/javaScript.png', percentage: 60, name: 'JavaScript' },
+    { iconSrc: '/icons/react.png', percentage: 60, name: 'React' },
     { iconSrc: '/icons/next.png', percentage: 70, name: 'Next' },
   ];
 
@@ -58,14 +58,14 @@ const AboutMe = () => {
             DISEÑO
           </h3>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-3 gap-4">
           {designSkills.map((skill, index) => (
             <div key={index} className="flex">
               {/* Usamos SkillItem con sus colores por defecto */}
               <SkillItem iconSrc={skill.iconSrc} percentage={skill.percentage} />
               <div className="flex flex-col">
                 <div className="font-montserrat text-4xl font-thin">
-                  {skill.percentage}
+                  {skill.percentage}%
                 </div>
                 <div className="font-montserrat text-1xl font-bold">
                   {skill.name}
@@ -81,7 +81,7 @@ const AboutMe = () => {
             FRONT-END
           </h3>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-3 gap-4 mt-8">
           {techSkills.map((skill, index) => (
             <div key={index} className="flex">
               {/* Pasamos colores distintos para las Skills Técnicas */}
@@ -93,7 +93,7 @@ const AboutMe = () => {
               />
               <div className="flex flex-col">
                 <div className="font-montserrat text-4xl font-thin">
-                  {skill.percentage}
+                  {skill.percentage}%
                 </div>
                 <div className="font-montserrat text-1xl font-bold">
                   {skill.name}

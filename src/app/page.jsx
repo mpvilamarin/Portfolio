@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import Head from 'next/head';
+import { Projects } from '@/components/Projects';
 
 function HomePage() {
   return (
@@ -48,6 +49,9 @@ function HomePage() {
 
         <section id="about" className='mt-36'>
           <AboutMe />
+        </section>
+        <section id='projects' className='mt-36'>
+          <Projects />
         </section>
       </main>
     </>
