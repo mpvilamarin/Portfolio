@@ -25,8 +25,8 @@ const AboutMe = () => {
       {/* Sección de descripción */}
       <section className="flex-1">
         <div className="pr-8">
-          <h1 className="font-montserrat text-8xl font-bold text-whiteCream">PAULA</h1>
-          <p>
+          <h1 className="font-montserrat text-6xl font-bold text-whiteCream">PAULA</h1>
+          <p className='font-robotoMono mt-4'>
             Me adapto a diferentes estilos y necesidades, explorando tendencias
             y buscando formas de hacer la web más intuitiva y atractiva. Mi
             enfoque está en la accesibilidad, la interactividad y la experiencia
@@ -48,13 +48,13 @@ const AboutMe = () => {
 
       {/* Sección de Skills */}
       <section className="flex-1">
-        <h2 className="font-montserrat text-5xl font-medium text-whiteCream mt-2">
+        <h2 className="font-montserrat text-4xl font-medium text-whiteCream mt-2">
           SKILLS
         </h2>
 
         {/* Diseño */}
         <div>
-          <h3 className="font-robotoMono text-3xl text-whiteCream mt-6">
+          <h3 className="font-robotoMono text-2xl text-whiteCream mt-6">
             DISEÑO
           </h3>
         </div>
@@ -77,7 +77,7 @@ const AboutMe = () => {
 
         {/* Front-End */}
         <div>
-          <h3 className="font-robotoMono text-3xl text-whiteCream mt-12">
+          <h3 className="font-robotoMono text-2xl text-whiteCream mt-12">
             FRONT-END
           </h3>
         </div>
