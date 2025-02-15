@@ -10,14 +10,13 @@ import "slick-carousel/slick/slick-theme.css";
 export default function ProjectsCarousel() {
   const settings = {
     infinite: true,
-    speed: 4000,
+    speed: 800,
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 1000,
+    autoplaySpeed: 2000,
     cssEase: "linear",
     swipeToSlide: true,
-    pauseOnHover: true,
     responsive: [
       {
         breakpoint: 1024,
