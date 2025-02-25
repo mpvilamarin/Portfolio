@@ -17,5 +17,52 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-montserrat), sans-serif;
+  font-family: 'Montserrat', sans-serif;
+}
+
+p,
+h3,
+a {
+  font-family: 'Roboto Mono', monospace;
+}
+
+p,
+a {
+  font-size: 16px;
+}
+
+h1,
+h2 {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Media queries para distintos breakpoints */
+
+/* Pantallas pequeñas: de 300px a 767px */
+@media screen and (min-width: 300px) and (max-width: 767px) {
+  p,
+  a {
+    font-size: 0.8em;
+  }
+}
+
+/* Pantallas medianas: de 768px a 1199px */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+
+}
+
+/* Pantallas grandes: de 1200px a 1440px */
+@media screen and (min-width: 1200px) and (max-width: 1440px) {
+  h1,
+  h2 {
+    font-size: 60px
+  }
+  h3 {
+    font-size: 22px
+  }
+}
+
+/* Pantallas extra grandes: de 1440px en adelante */
+@media screen and (min-width: 1440px) {
+
 }
