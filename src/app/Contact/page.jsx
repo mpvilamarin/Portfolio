@@ -16,8 +16,8 @@ function Contact() {
                 <section className="flex-1">
                     <div className="pr-8">
                         <h1 className="font-montserrat text-6xl font-bold text-whiteCream">ESCRÍBEME</h1>
-                        <p className='font-robotoMono mt-4'>
-                            ¿Tienes una idea, un proyecto o simplemente quieres hablar de diseño y desarrollo? ¡Escríbeme! Estoy abierta a nuevas colaboraciones, desafíos interesantes y conversaciones sobre cómo mejorar la experiencia digital
+                        <p className='font-robotoMono mt-4 text-whiteCream'>
+                            ¿Tienes una idea, un proyecto o simplemente quieres hablar de diseño y desarrollo? <br /> ¡Escríbeme! Estoy abierta a nuevas colaboraciones, desafíos interesantes y conversaciones sobre cómo mejorar la experiencia digital
                             <br />
                             <br />
                             <Link href={"https://wa.me/5491164117527"}>
