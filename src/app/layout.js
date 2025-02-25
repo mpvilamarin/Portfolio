@@ -15,14 +15,11 @@ const robotoMono = Roboto_Mono({
   weight: ["100", "300", "400", "500", "600", "700"],
 });
 
-export const metadata = {
-  title: "MPVILLAMARIN",
-  description: "Portafolio profesional - María Paula Villamarín",
-};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+
       <body
         className={`${montserrat.variable} ${robotoMono.variable} antialiased`}
       >

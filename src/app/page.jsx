@@ -4,13 +4,14 @@ import React from 'react';
 import Head from 'next/head';
 import AboutMe from '@/components/AboutMe';
 import { Projects } from '@/components/Projects';
+import Layout from './layout'
 
 function HomePage() {
   return (
-    <>
+    <Layout>
       <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Mi Portafolio</title>
+        <meta name="Portfolio de Paula Villamarin" content='Aquí encontrarás el portafolio de Paula Villamarin, diseñadora gráfica y frontend developer'/>
       </Head>
 
       {/* Contenedor con scroll snapping */}
@@ -32,7 +33,7 @@ function HomePage() {
                   Portafolio
                 </button>
               </Link>
-              <Link href={"/"}>
+              <Link href={"/Contact"}>
                 <button className="bg-green text-blackLight rounded-md px-6 py-2 text-1xl text-[600] font-robotoMono hover:bg-transparent hover:border-solid hover:border-green hover:border-2 hover:text-whiteCream transition ease-in-out duration-500">
                   Contacto
                 </button>
@@ -45,10 +46,10 @@ function HomePage() {
               <Link href={"/"}>
                 <Image src="/icons/behance.png" alt="imagen1" width={27} height={27} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
-              <Link href={"/"}>
+              <Link href={"https://www.linkedin.com/in/maria-paula-villamarin/"}>
                 <Image src="/icons/linkedin.png" alt="imagen1" width={24} height={24} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
-              <Link href={"/"}>
+              <Link href={"https://wa.me/5491164117527"}>
                 <Image src="/icons/whatsapp.png" alt="imagen1" width={24} height={24} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
             </div>
@@ -65,7 +66,7 @@ function HomePage() {
           </section>
         </main>
       </div>
-    </>
+    </Layout>
   );
 }
 
