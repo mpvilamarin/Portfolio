@@ -1,5 +1,5 @@
 import React from 'react'
-import ProjectsCarousel from './projectsCarouel'
+import ProjectsCarousel from './projectsCarousel'
 
 export const Projects = () => {
   return (

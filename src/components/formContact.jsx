@@ -12,30 +12,32 @@ export const FormContact = () => {
     const form = useRef();
 
     const [formData, setFormData] = useState({
-        name: "",
-        workType: "empresa", // Valor por defecto
-        email: "",
-        phone: "",
+        user_name: "",
+        user_workType: "empresa", // Valor por defecto
+        user_email: "",
+        user_phone: "",
         message: "",
     });
 
     const [errors, setErrors] = useState({
-        name: "",
-        email: "",
-        phone: "",
+        user_name: "",
+        user_email: "",
+        user_phone: "",
         message: "",
     });
 
     // Para saber si un campo fue visitado y así mostrar el error
     const [touched, setTouched] = useState({
-        name: false,
-        email: false,
-        phone: false,
+        user_name: false,
+        user_email: false,
+        user_phone: false,
         message: false,
     });
 
     // Error de envío si faltan campos obligatorios
     const [formSubmissionError, setFormSubmissionError] = useState("");
+    // Mensaje de éxito al enviar el formulario
+    const [formSuccess, setFormSuccess] = useState("");
 
     const handleBlur = (field) => {
         setTouched({ ...touched, [field]: true });
@@ -45,13 +47,13 @@ export const FormContact = () => {
     const validateField = (field, value) => {
         let error = "";
         switch (field) {
-            case "name":
+            case "user_name":
                 error = validateName(value);
                 break;
-            case "email":
+            case "user_email":
                 error = validateEmail(value);
                 break;
-            case "phone":
+            case "user_phone":
                 error = validatePhone(value);
                 break;
             case "message":
@@ -76,9 +78,9 @@ export const FormContact = () => {
 
         // Verificar que no hayan campos vacíos (todos son obligatorios)
         if (
-            !formData.name.trim() ||
-            !formData.email.trim() ||
-            !formData.phone.trim() ||
+            !formData.user_name.trim() ||
+            !formData.user_email.trim() ||
+            !formData.user_phone.trim() ||
             !formData.message.trim()
         ) {
             setFormSubmissionError("Faltan campos obligatorios");
@@ -86,15 +88,15 @@ export const FormContact = () => {
         }
         setFormSubmissionError("");
 
-        const nameError = validateName(formData.name);
-        const emailError = validateEmail(formData.email);
-        const phoneError = validatePhone(formData.phone);
+        const nameError = validateName(formData.user_name);
+        const emailError = validateEmail(formData.user_email);
+        const phoneError = validatePhone(formData.user_phone);
         const messageError = validateMessage(formData.message);
 
         setErrors({
-            name: nameError,
-            email: emailError,
-            phone: phoneError,
+            user_name: nameError,
+            user_email: emailError,
+            user_phone: phoneError,
             message: messageError,
         });
 
@@ -102,32 +104,35 @@ export const FormContact = () => {
             return;
         }
 
-        // Envío del formulario mediante EmailJS
-        emailjs
-            .sendForm(
-                process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-                process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
-                form.current,
-                process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
-            )
-            .then(
-                (result) => {
-                    console.log("Email enviado:", result.text);
-
-                    // Reiniciar el formulario
-                    setFormData({
-                        name: "",
-                        workType: "empresa",
-                        email: "",
-                        phone: "",
-                        message: "",
-                    });
-                    setTouched({});
-                },
-                (error) => {
-                    console.error("Error al enviar email:", error.text);
-                }
-            );
+        // Envío del formulario mediante EmailJS usando variables de entorno
+        emailjs.sendForm(
+            process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+            process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+            form.current,
+            process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+        )
+        .then(
+            (result) => {
+                console.log("Email enviado:", result.text);
+                setFormSuccess("Mensaje enviado correctamente.");
+                // Reiniciar el formulario
+                setFormData({
+                    user_name: "",
+                    user_workType: "empresa",
+                    user_email: "",
+                    user_phone: "",
+                    message: "",
+                });
+                setTouched({});
+                // Ocultar el mensaje de éxito después de 3 segundos
+                setTimeout(() => {
+                    setFormSuccess("");
+                }, 3000);
+            },
+            (error) => {
+                console.error("Error al enviar email:", error.text);
+            }
+        );
     };
 
     const inputStyle = (field) => {
@@ -147,13 +152,13 @@ export const FormContact = () => {
                 <input
                     type="text"
                     name="user_name"
-                    value={formData.name}
+                    value={formData.user_name}
                     onChange={handleChange}
-                    onBlur={() => handleBlur("name")}
-                    className={`w-full h-8 p-2 border ${inputStyle("name")} rounded bg-transparent`}
+                    onBlur={() => handleBlur("user_name")}
+                    className={`w-full h-8 p-2 border ${inputStyle("user_name")} rounded bg-transparent`}
                 />
-                {errors.name && touched.name && (
-                    <p className="text-red-500 font-robotoMono text-xs">{errors.name}</p>
+                {errors.user_name && touched.user_name && (
+                    <p className="text-red-500 font-robotoMono text-xs">{errors.user_name}</p>
                 )}
             </div>
 
@@ -166,7 +171,7 @@ export const FormContact = () => {
                             type="radio"
                             name="user_workType"
                             value="empresa"
-                            checked={formData.workType === "empresa"}
+                            checked={formData.user_workType === "empresa"}
                             onChange={handleChange}
                             className="mr-1"
                         />
@@ -177,7 +182,7 @@ export const FormContact = () => {
                             type="radio"
                             name="user_workType"
                             value="freelance"
-                            checked={formData.workType === "freelance"}
+                            checked={formData.user_workType === "freelance"}
                             onChange={handleChange}
                             className="mr-1"
                         />
@@ -192,13 +197,13 @@ export const FormContact = () => {
                 <input
                     type="email"
                     name="user_email"
-                    value={formData.email}
+                    value={formData.user_email}
                     onChange={handleChange}
-                    onBlur={() => handleBlur("email")}
-                    className={`w-full h-8 p-2 border ${inputStyle("email")} rounded bg-transparent`}
+                    onBlur={() => handleBlur("user_email")}
+                    className={`w-full h-8 p-2 border ${inputStyle("user_email")} rounded bg-transparent`}
                 />
-                {errors.email && touched.email && (
-                    <p className="text-red-500 font-robotoMono text-xs">{errors.email}</p>
+                {errors.user_email && touched.user_email && (
+                    <p className="text-red-500 font-robotoMono text-xs">{errors.user_email}</p>
                 )}
             </div>
 
@@ -208,13 +213,13 @@ export const FormContact = () => {
                 <input
                     type="tel"
                     name="user_phone"
-                    value={formData.phone}
+                    value={formData.user_phone}
                     onChange={handleChange}
-                    onBlur={() => handleBlur("phone")}
-                    className={`w-full h-8 p-2 border ${inputStyle("phone")} rounded bg-transparent`}
+                    onBlur={() => handleBlur("user_phone")}
+                    className={`w-full h-8 p-2 border ${inputStyle("user_phone")} rounded bg-transparent`}
                 />
-                {errors.phone && touched.phone && (
-                    <p className="text-red-500 font-robotoMono text-xs">{errors.phone}</p>
+                {errors.user_phone && touched.user_phone && (
+                    <p className="text-red-500 font-robotoMono text-xs">{errors.user_phone}</p>
                 )}
             </div>
 
@@ -243,6 +248,11 @@ export const FormContact = () => {
             {formSubmissionError && (
                 <p className="text-red-500 font-robotoMono text-xs mt-2">
                     {formSubmissionError}
+                </p>
+            )}
+            {formSuccess && (
+                <p className="text-green-500 font-robotoMono text-xs mt-2">
+                    {formSuccess}
                 </p>
             )}
         </form>

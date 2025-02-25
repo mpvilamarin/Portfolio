@@ -32,8 +32,8 @@ export function validateName(name) {
   export function validateMessage(message) {
     // Contar palabras (filtrando espacios vacíos)
     const words = message.trim().split(/\s+/);
-    if (words.length < 10) {
-      return "El mensaje debe tener al menos 10 palabras.";
+    if (words.length < 5) {
+      return "El mensaje debe tener al menos 5 palabras.";
     }
     return "";
   }

@@ -3,6 +3,7 @@ import React from "react";
 import Slider from "react-slick";
 import Image from "next/image";
 import { projects } from "./projectsContent";
+import Link from "next/link";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -35,16 +36,18 @@ export default function ProjectsCarousel() {
         {projects.map((project, index) => (
           <div key={index} className="p-4">
             <div className="relative group overflow-hidden rounded-sm shadow-lg h-[340px]">
-              <Image
-                src={project.image}
-                alt={project.title}
-                width={500}
-                height={300}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
+              <Link href={`/projects/${project.slug}`}>
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  width={500}
+                  height={300}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </Link>
               <div className="absolute inset-0 bg-black bg-opacity-90 flex flex-col justify-end p-4 transition-transform duration-500 ease-in-out group-hover:translate-y-full">
                 <h3 className="text-lg font-bold text-white">{project.title}</h3>
-                <p className="text-sm text-gray-300">{project.description}</p>
+                <p className="text-sm text-gray-300">{project.subtitle}</p>
               </div>
             </div>
           </div>
