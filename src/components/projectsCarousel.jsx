@@ -14,7 +14,7 @@ export default function ProjectsCarousel() {
     speed: 800,
     slidesToShow: 3,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: false,
     autoplaySpeed: 2000,
     cssEase: "linear",
     swipeToSlide: true,
@@ -35,7 +35,7 @@ export default function ProjectsCarousel() {
       <Slider {...settings}>
         {projects.map((project, index) => (
           <div key={index} className="p-4">
-            <div className="relative group overflow-hidden rounded-sm shadow-lg h-[340px]">
+            <div className="relative group overflow-hidden rounded-sm shadow-lg h-[340px] cursor-pointer">
               <Link href={`/projects/${project.slug}`}>
                 <Image
                   src={project.image}
@@ -45,9 +45,9 @@ export default function ProjectsCarousel() {
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               </Link>
-              <div className="absolute inset-0 bg-black bg-opacity-90 flex flex-col justify-end p-4 transition-transform duration-500 ease-in-out group-hover:translate-y-full">
-                <h3 className="text-lg font-bold text-white">{project.title}</h3>
-                <p className="text-sm text-gray-300">{project.subtitle}</p>
+              <div className="absolute inset-0 pt-8 bg-black bg-opacity-95 flex flex-col justify-top items-center px-4 transition-transform duration-500 ease-in-out group-hover:translate-y-full">
+                <h3 className="text-xl font-bold text-white uppercase text-center">{project.title}</h3>
+                <p className="text-sm text-gray-300 text-center">{project.subtitle}</p>
               </div>
             </div>
           </div>

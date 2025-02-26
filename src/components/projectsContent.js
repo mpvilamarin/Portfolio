@@ -28,7 +28,7 @@
     },
     {
       slug: "web-vulnmaster",
-        title: 'Diseño y desarrollo web',
+        title: 'Diseño y frontend',
         subtitle: 'Un sitio funcional y optimizado para expertos en seguridad',
         client: 'Vulnmaster',
         description: 'Diseñé y maqueté la web de Vulnmaster, enfocándome en una estructura clara y accesible. Implementé Next.js y Tailwind CSS para garantizar un diseño moderno, optimizado y responsive, asegurando una navegación intuitiva y una experiencia de usuario fluida.',

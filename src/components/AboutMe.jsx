@@ -15,8 +15,7 @@ const AboutMe = () => {
             Me adapto a diferentes estilos y necesidades, explorando tendencias
             y buscando formas de hacer la web más intuitiva y atractiva. Mi
             enfoque está en la accesibilidad, la interactividad y la experiencia
-            de usuario, siempre con una estructura bien organizada (porque sí,
-            el desorden en el código me da ansiedad).
+            de usuario, siempre con una estructura bien organizada
             <br />
             <br />
             Si quieres hablar de diseño, desarrollo o simplemente debatir sobre

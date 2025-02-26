@@ -4,13 +4,14 @@ import Layout from '../layout';
 import Link from 'next/link';
 import { FormContact } from '@/components/formContact';
 
+export const metadata = {
+    title: 'Contacto | Paula Villamarín',
+    description: 'Ponte en contacto con Paula, desarrolladora frontend y diseñadora gráfica. Estoy disponible para colaborar en proyectos y discutir ideas innovadoras en diseño y desarrollo web.',
+  };
+
 function Contact() {
     return (
         <Layout>
-            <Head>
-                <meta name="contacto" content="pagina para contactarse con Paula Villamarin" />
-                <title>Contacto | </title>
-            </Head>
             <main className="flex h-screen items-center px-24 mt-8">
                 {/* Sección de descripción */}
                 <section className="flex-1">

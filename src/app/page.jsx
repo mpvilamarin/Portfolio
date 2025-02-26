@@ -1,19 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import Head from 'next/head';
 import AboutMe from '@/components/AboutMe';
 import { Projects } from '@/components/Projects';
 import Layout from './layout'
 
+export const metadata = {
+  title: 'Home | Paula Villamarín',
+  description: 'Soy Paula Villamarín, desarrolladora frontend y diseñadora gráfica. Combino código y creatividad para crear interfaces accesibles, interactivas y funcionales. Explora mis proyectos y trabajemos juntos.',
+};
+
 function HomePage() {
   return (
     <Layout>
-      <Head>
-        <title>Mi Portafolio</title>
-        <meta name="Portfolio de Paula Villamarin" content='Aquí encontrarás el portafolio de Paula Villamarin, diseñadora gráfica y frontend developer'/>
-      </Head>
-
       {/* Contenedor con scroll snapping */}
       <div className="h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth">
         <main className="min-h-screen flex flex-col py-16 px-24">
@@ -40,16 +39,16 @@ function HomePage() {
               </Link>
             </div>
             <div className="flex space-x-12 items-center mt-32">
-              <Link href={"/"}>
+              <Link href={"/"} target="_blank" rel="noopener noreferrer">
                 <Image src="/icons/instagram.png" alt="imagen1" width={24} height={24} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
-              <Link href={"/"}>
+              <Link href={"https://www.behance.net/marapvillama"} target="_blank" rel="noopener noreferrer">
                 <Image src="/icons/behance.png" alt="imagen1" width={27} height={27} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
-              <Link href={"https://www.linkedin.com/in/maria-paula-villamarin/"}>
+              <Link href={"https://www.linkedin.com/in/maria-paula-villamarin/"} target="_blank" rel="noopener noreferrer">
                 <Image src="/icons/linkedin.png" alt="imagen1" width={24} height={24} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
-              <Link href={"https://wa.me/5491164117527"}>
+              <Link href={"https://wa.me/5491164117527"} target="_blank" rel="noopener noreferrer">
                 <Image src="/icons/whatsapp.png" alt="imagen1" width={24} height={24} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
             </div>
