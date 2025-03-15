@@ -60,7 +60,7 @@ function HomePage() {
           </section>
 
           {/* Sección Projects */}
-          <section id="projects" className="h-screen snap-start flex items-center justify-center">
+          <section id="projects" className="snap-start flex items-center justify-center">
             <Projects />
           </section>
         </main>

@@ -56,7 +56,7 @@ export default async function ProjectPage({ params }) {
 
   return (
     <Layout>
-      <section className="flex min-h-screen items-center px-24 mt-12">
+      <section className="flex min-h-screen items-center px-24 mt-12 gap-20">
         <main className="w-[50%]">
           <h1 className="font-montserrat font-bold text-whiteCream uppercase leading-none">
             {project.title}
@@ -75,13 +75,14 @@ export default async function ProjectPage({ params }) {
             </a>
           )}
         </main>
-        <div className="max-w-4xl mx-auto p-4">
+        {/* Contenedor de imagen con 40% de ancho y altura fija */}
+        <div className="relative w-[40%] h-[80vh]">
           <Image
             src={project.image}
             alt={project.title}
-            width={200}
-            height={200}
-            className="w-full mb-4"
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'top' }}
+            className="mb-4"
           />
         </div>
       </section>
