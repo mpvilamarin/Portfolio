@@ -5,7 +5,7 @@ import Link from "next/link";
 import { projects } from "./projectsContent";
 
 export default function ProjectsContainer() {
-  // Categorías
+
   const categories = [
     "All",
     "Website Design",
@@ -14,14 +14,19 @@ export default function ProjectsContainer() {
     "Branding",
   ];
 
-  // Estado para la categoría seleccionada
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [visibleCount, setVisibleCount] = useState(6);
 
-  // Filtrado de proyectos según la categoría
   const filteredProjects =
     selectedCategory === "All"
       ? projects
       : projects.filter((p) => p.category === selectedCategory);
+
+  const displayedProjects = filteredProjects.slice(0, visibleCount);
+
+  const handleShowMore = () => {
+    setVisibleCount((prev) => prev + 3);
+  };
 
   return (
     <div className="w-full mx-auto px-4 py-8">
@@ -44,7 +49,7 @@ export default function ProjectsContainer() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredProjects.map((project, index) => (
+        {displayedProjects.map((project, index) => (
           <div key={index} className="rounded-md shadow-lg">
             <Link href={`/projects/${project.slug}`}>
               <Image
@@ -62,6 +67,16 @@ export default function ProjectsContainer() {
           </div>
         ))}
       </div>
+      {filteredProjects.length > visibleCount && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={handleShowMore}
+            className="bg-green text-blackLight text-sm font-semibold rounded-md px-4 py-2 text-1xl font-robotoMono hover:translate-y-1 transition ease-in-out duration-300"
+          >
+            Ver más
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { FaGithub, FaBehance, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import Link from 'next/link';
 import React from 'react';
 import AboutMe from '@/components/AboutMe';
@@ -39,17 +39,17 @@ function HomePage() {
               </Link>
             </div>
             <div className="flex space-x-12 items-center mt-32">
-              <Link href={"/"} target="_blank" rel="noopener noreferrer">
-                <Image src="/icons/instagram.png" alt="imagen1" width={24} height={24} className="hover:translate-y-1 transition ease-out duration-500" />
+              <Link href={"https://github.com/mpvilamarin"} target="_blank" rel="noopener noreferrer">
+                <FaGithub size={28} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
               <Link href={"https://www.behance.net/marapvillama"} target="_blank" rel="noopener noreferrer">
-                <Image src="/icons/behance.png" alt="imagen1" width={27} height={27} className="hover:translate-y-1 transition ease-out duration-500" />
+                <FaBehance size={28} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
               <Link href={"https://www.linkedin.com/in/maria-paula-villamarin/"} target="_blank" rel="noopener noreferrer">
-                <Image src="/icons/linkedin.png" alt="imagen1" width={24} height={24} className="hover:translate-y-1 transition ease-out duration-500" />
+                <FaLinkedin size={28} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
               <Link href={"https://wa.me/5491164117527"} target="_blank" rel="noopener noreferrer">
-                <Image src="/icons/whatsapp.png" alt="imagen1" width={24} height={24} className="hover:translate-y-1 transition ease-out duration-500" />
+                <FaWhatsapp size={28} className="hover:translate-y-1 transition ease-out duration-500" />
               </Link>
             </div>
           </section>

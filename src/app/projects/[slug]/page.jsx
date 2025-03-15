@@ -69,7 +69,7 @@ export default async function ProjectPage({ params }) {
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block mt-12 border-solid border-green border-2 rounded-md px-4 py-2 hover:bg-green hover:text-blackLight transition ease-in-out duration-500"
+              className="inline-block mt-12 border-solid border-green border-2 rounded-md px-4 py-2 hover:bg-green hover:text-blackLight transition ease-in-out duration-300"
             >
               Ver Proyecto
             </a>

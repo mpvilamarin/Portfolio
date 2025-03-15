@@ -31,7 +31,7 @@ export default function SkillItem({
 
   return (
     <div
-      className="inline-block m-2 hover:translate-y-1 transition ease-in-out duration-500"
+      className="inline-block m-2 hover:translate-y-1 transition ease-in-out duration-300"
       onMouseEnter={handleMouseEnter}
     >
       <CircularProgress

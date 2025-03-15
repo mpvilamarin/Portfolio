@@ -59,6 +59,46 @@
         url: "",
         category: "Website Design"
       },
+      {
+        slug: "web-vulnmaster",
+          title: 'Diseño y frontend',
+          subtitle: 'Un sitio funcional y optimizado para expertos en seguridad',
+          client: 'Vulnmaster',
+          description: 'Diseñé y maqueté la web de Vulnmaster, enfocándome en una estructura clara y accesible. Implementé Next.js y Tailwind CSS para garantizar un diseño moderno, optimizado y responsive, asegurando una navegación intuitiva y una experiencia de usuario fluida.',
+          image: '/project.jpg',
+          url: "vulnmaster.us",
+          category: "Website Design"
+        },
+        {
+          slug: "dashboard-vulnmaster",
+          title: 'Dashboard interactivo',
+          subtitle: 'Visualización de datos con diseño intuitivo',
+          client: 'Vulnmaster',
+          description: 'Desarrollé el diseño y la maquetación del dashboard de Vulnmaster, creando una interfaz clara y funcional para la gestión de datos de seguridad. Implementé una estructura modular y un sistema visual intuitivo para facilitar el acceso a información clave, asegurando una experiencia fluida y eficiente.',
+          image: '/project.jpg',
+          url: "",
+          category: "Website Design"
+        },
+        {
+          slug: "dashboard-vulnmaster",
+          title: 'Dashboard interactivo',
+          subtitle: 'Visualización de datos con diseño intuitivo',
+          client: 'Vulnmaster',
+          description: 'Desarrollé el diseño y la maquetación del dashboard de Vulnmaster, creando una interfaz clara y funcional para la gestión de datos de seguridad. Implementé una estructura modular y un sistema visual intuitivo para facilitar el acceso a información clave, asegurando una experiencia fluida y eficiente.',
+          image: '/project.jpg',
+          url: "",
+          category: "Website Design"
+        },
+        {
+          slug: "dashboard-vulnmaster",
+          title: 'Dashboard interactivo',
+          subtitle: 'Visualización de datos con diseño intuitivo',
+          client: 'Vulnmaster',
+          description: 'Desarrollé el diseño y la maquetación del dashboard de Vulnmaster, creando una interfaz clara y funcional para la gestión de datos de seguridad. Implementé una estructura modular y un sistema visual intuitivo para facilitar el acceso a información clave, asegurando una experiencia fluida y eficiente.',
+          image: '/project.jpg',
+          url: "",
+          category: "Website Design"
+        },
   ];
 
   export function getAllProjects() {
