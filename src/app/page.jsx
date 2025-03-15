@@ -28,12 +28,12 @@ function HomePage() {
             </h2>
             <div className="flex items-center space-x-20 mt-16">
               <Link href={"/"}>
-                <button className="border-solid border-green border-2 text-whiteCream rounded-md px-6 py-2 text-1xl text-[600] font-robotoMono hover:bg-green hover:text-blackLight transition ease-in-out duration-500">
+                <button className="border-solid border-green border-2 text-whiteCream rounded-md px-6 py-2 text-1xl text-[600] font-robotoMono hover:bg-green hover:text-blackLight transition ease-in-out duration-300">
                   Portafolio
                 </button>
               </Link>
               <Link href={"/Contact"}>
-                <button className="bg-green text-blackLight rounded-md px-6 py-2 text-1xl text-[600] font-robotoMono hover:bg-transparent hover:border-solid hover:border-green hover:border-2 hover:text-whiteCream transition ease-in-out duration-500">
+                <button className="bg-green text-blackLight rounded-md px-6 py-2 text-1xl text-[600] font-robotoMono hover:bg-transparent hover:border-solid hover:border-green hover:border-2 hover:text-whiteCream transition ease-in-out duration-300">
                   Contacto
                 </button>
               </Link>

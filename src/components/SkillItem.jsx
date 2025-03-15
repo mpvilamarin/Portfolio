@@ -8,8 +8,8 @@ import Image from 'next/image';
 export default function SkillItem({
   iconSrc,
   percentage,
-  trackColor = '#EA91FF',
-  progressColor = '#D058EC',
+  trackColor = '#FCFCFC',
+  progressColor = '#EA91FF',
 }) {
   const [isCounting, setIsCounting] = React.useState(true);
 
@@ -38,14 +38,14 @@ export default function SkillItem({
         determinate
         value={value}
         sx={{
-          '--CircularProgress-size': '50px',
-          '--CircularProgress-trackThickness': '5px',
+          '--CircularProgress-size': '45px',
+          '--CircularProgress-trackThickness': '3px',
           '--CircularProgress-progressThickness': '5px',
           '--CircularProgress-trackColor': trackColor,
           '--CircularProgress-progressColor': progressColor,
         }}
       >
-        <Image src={iconSrc} height={40} width={40} alt="Skill Icon" />
+        <Image src={iconSrc} height={38} width={38} alt="Skill Icon" />
       </CircularProgress>
     </div>
   );

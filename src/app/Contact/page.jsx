@@ -22,8 +22,8 @@ function Contact() {
                             <br />
                             <br />
                             <Link href={"https://wa.me/5491164117527"}>
-                            <button className="border-solid border-green border-2 text-whiteCream rounded-md px-4 py-2 text-md text-[600] font-robotoMono hover:bg-green hover:text-blackLight transition ease-in-out duration-500 mt-4">
-                                ¡CONECTEMOS!
+                            <button className="bg-green text-blackLight rounded-md px-6 py-2 text-1xl text-[600] font-robotoMono hover:translate-y-1 transition ease-in-out duration-300">
+                                ¡Conectemos!
                             </button> 
                             </Link>
                         </p>

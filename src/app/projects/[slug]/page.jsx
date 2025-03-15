@@ -1,5 +1,3 @@
-// app/projects/[slug]/page.jsx
-
 import { notFound } from 'next/navigation';
 import { getAllProjects, getProjectBySlug } from '@/components/projectsContent';
 import Layout from '@/app/layout';
@@ -7,7 +5,6 @@ import Image from 'next/image';
 
 // Función para generar metadatos dinámicos
 export async function generateMetadata({ params }) {
-  // Espera a que 'params' se resuelva
   const { slug } = await params;
 
   const project = getProjectBySlug(slug);
@@ -41,7 +38,6 @@ export async function generateMetadata({ params }) {
   };
 }
 
-// Función para generar parámetros estáticos
 export async function generateStaticParams() {
   const projects = getAllProjects();
   return projects.map((project) => ({
@@ -49,9 +45,7 @@ export async function generateStaticParams() {
   }));
 }
 
-// Componente de la página del proyecto
 export default async function ProjectPage({ params }) {
-  // Espera a que 'params' se resuelva
   const { slug } = await params;
 
   const project = getProjectBySlug(slug);

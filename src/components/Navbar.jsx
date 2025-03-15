@@ -7,6 +7,7 @@ const Navbar = () => {
       <ul className="flex space-x-14 items-center text-robotoMono text-1xl text-green">
         <li><a href="/#about">Sobre mí</a></li>
         <li><a href="/#projects">Proyectos</a></li>
+        <li><a href="/contact">Contacto</a></li>
         <li className="relative group">
           <button className="focus:outline-none">
             CV
@@ -23,11 +24,11 @@ const Navbar = () => {
             </li>
             <li>
               <Link href={'https://drive.google.com/file/d/1PtBtuDM-FsxTmfI0F50EyOC8PuIPTXZZ/view?usp=sharing'} target="_blank" rel="noopener noreferrer">
-              <p
-                className="block px-4 py-2 text-green hover:opacity-60 transition-opacity duration-300 text-robotoMono text-1xl"
-              >
-                Español
-              </p>
+                <p
+                  className="block px-4 py-2 text-green hover:opacity-60 transition-opacity duration-300 text-robotoMono text-1xl"
+                >
+                  Español
+                </p>
               </Link>
             </li>
           </ul>

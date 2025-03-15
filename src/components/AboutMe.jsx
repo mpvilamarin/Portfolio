@@ -32,26 +32,26 @@ const AboutMe = () => {
 
       {/* Sección de Skills */}
       <section className="flex-1">
-        <h2 className="font-montserrat text-4xl font-medium text-whiteCream mt-2">
+        <h2 className="font-montserrat text-4xl font-medium text-whiteCream mt-2 tracking-[17px]">
           SKILLS
         </h2>
 
         {/* Diseño */}
         <div>
-          <h3 className="font-robotoMono text-2xl text-whiteCream mt-6">
+          <h3 className="font-robotoMono text-2xl text-whiteCream mt-4">
             DISEÑO
           </h3>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-2">
           {designSkills.map((skill, index) => (
-            <div key={index} className="flex">
+            <div key={index} className="flex mt-4">
               {/* Usamos SkillItem con sus colores por defecto */}
               <SkillItem iconSrc={skill.iconSrc} percentage={skill.percentage} />
               <div className="flex flex-col">
-                <div className="font-montserrat text-4xl font-thin">
+                <div className="font-montserrat text-3xl font-thin">
                   {skill.percentage}%
                 </div>
-                <div className="font-montserrat text-1xl font-bold">
+                <div className="font-montserrat text-md font-bold">
                   {skill.name}
                 </div>
               </div>
@@ -61,25 +61,25 @@ const AboutMe = () => {
 
         {/* Front-End */}
         <div>
-          <h3 className="font-robotoMono text-2xl text-whiteCream mt-12">
+          <h3 className="font-robotoMono text-2xl text-whiteCream mt-10">
             FRONT-END
           </h3>
         </div>
-        <div className="grid grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-3 gap-2 mt-4">
           {techSkills.map((skill, index) => (
             <div key={index} className="flex">
               {/* Pasamos colores distintos para las Skills Técnicas */}
               <SkillItem
                 iconSrc={skill.iconSrc}
                 percentage={skill.percentage}
-                trackColor="#909E7B"        // Color de la parte “vacía” 
-                progressColor="#C1F774"  // Color de la parte “llena”
+                trackColor="#FCFCFC"
+                progressColor="#C1F774"
               />
               <div className="flex flex-col">
-                <div className="font-montserrat text-4xl font-thin">
+                <div className="font-montserrat text-3xl font-thin">
                   {skill.percentage}%
                 </div>
-                <div className="font-montserrat text-1xl font-bold">
+                <div className="font-montserrat text-md font-bold">
                   {skill.name}
                 </div>
               </div>

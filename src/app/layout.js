@@ -18,7 +18,7 @@ const robotoMono = Roboto_Mono({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="es">
 
       <body
         className={`${montserrat.variable} ${robotoMono.variable} antialiased`}
