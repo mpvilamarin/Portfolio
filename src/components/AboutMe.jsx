@@ -4,84 +4,78 @@ import { designSkills } from './designSkills';
 import { techSkills } from './techSkills';
 
 const AboutMe = () => {
-
   return (
-    <main className="flex space-x-28 items-center">
+    <main className="flex flex-col md:flex-row md:space-x-28 items-center md:items-start sm:px-8 md:px-16">
       {/* Sección de descripción */}
-      <section className="flex-1">
-        <div className="pr-8">
-          <h1 className="font-montserrat text-6xl font-bold text-whiteCream">PAULA</h1>
-          <p className='font-robotoMono mt-4'>
+      <section className="flex-1 text-center md:text-left">
+        <div className="md:pr-8">
+          <h1 className="font-montserrat text-5xl sm:text-5xl md:text-6xl font-bold text-whiteCream">
+            PAULA
+          </h1>
+          <p className="font-robotoMono text-xs sm:text-lg mt-4 text-whiteCream">
             Me adapto a diferentes estilos y necesidades, explorando tendencias
             y buscando formas de hacer la web más intuitiva y atractiva. Mi
             enfoque está en la accesibilidad, la interactividad y la experiencia
-            de usuario, siempre con una estructura bien organizada
+            de usuario, siempre con una estructura bien organizada.
             <br />
             <br />
             Si quieres hablar de diseño, desarrollo o simplemente debatir sobre
             la mejor forma de animar sin perder la paciencia, hablemos.
           </p>
         </div>
-        <div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
       </section>
 
-      {/* Sección de Skills */}
-      <section className="flex-1">
-        <h2 className="font-montserrat text-4xl font-medium text-whiteCream mt-2 tracking-[17px]">
+      {/* Skills */}
+      <section className="flex-1 mt-12 md:mt-0 w-full">
+        <h2 className="font-montserrat text-2xl sm:text-3xl md:text-4xl font-medium text-whiteCream tracking-[10px] sm:tracking-[14px] md:tracking-[17px] md:text-left">
           SKILLS
         </h2>
 
         {/* Diseño */}
-        <div>
-          <h3 className="font-robotoMono text-2xl text-whiteCream mt-4">
-            DISEÑO
-          </h3>
-        </div>
+        <h3 className="font-robotoMono text-lg sm:text-xl md:text-2xl text-whiteCream mt-2 md:text-left">
+          DISEÑO
+        </h3>
         <div className="grid grid-cols-3 gap-2">
           {designSkills.map((skill, index) => (
-            <div key={index} className="flex mt-4">
-              {/* Usamos SkillItem con sus colores por defecto */}
-              <SkillItem iconSrc={skill.iconSrc} percentage={skill.percentage} />
+            <div key={index} className="flex items-center">
+              <SkillItem
+                iconSrc={skill.iconSrc}
+                percentage={skill.percentage}
+                size="small"
+              />
               <div className="flex flex-col">
-                <div className="font-montserrat text-3xl font-thin">
+                <span className="font-montserrat text-lg sm:text-base text-whiteCream">
                   {skill.percentage}%
-                </div>
-                <div className="font-montserrat text-md font-bold">
+                </span>
+                <span className="font-montserrat text-[11px] sm:text-sm font-semibold text-whiteCream">
                   {skill.name}
-                </div>
+                </span>
               </div>
             </div>
           ))}
         </div>
 
         {/* Front-End */}
-        <div>
-          <h3 className="font-robotoMono text-2xl text-whiteCream mt-10">
-            FRONT-END
-          </h3>
-        </div>
-        <div className="grid grid-cols-3 gap-2 mt-4">
+        <h3 className="font-robotoMono text-lg sm:text-xl md:text-2xl text-whiteCream mt-8 md:text-left">
+          FRONT-END
+        </h3>
+        <div className="grid grid-cols-3 gap-4 mt-2">
           {techSkills.map((skill, index) => (
-            <div key={index} className="flex">
-              {/* Pasamos colores distintos para las Skills Técnicas */}
+            <div key={index} className="flex items-center space-x-2">
               <SkillItem
                 iconSrc={skill.iconSrc}
                 percentage={skill.percentage}
                 trackColor="#FCFCFC"
                 progressColor="#C1F774"
+                size="small"
               />
-              <div className="flex flex-col">
-                <div className="font-montserrat text-3xl font-thin">
+              <div className="flex flex-col leading-tight">
+                <span className="font-montserrat text-sm sm:text-base text-whiteCream">
                   {skill.percentage}%
-                </div>
-                <div className="font-montserrat text-md font-bold">
+                </span>
+                <span className="font-montserrat text-xs sm:text-sm font-bold text-whiteCream">
                   {skill.name}
-                </div>
+                </span>
               </div>
             </div>
           ))}
