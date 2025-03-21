@@ -10,7 +10,6 @@ export default function SkillItem({
   percentage,
   trackColor = '#FCFCFC',
   progressColor = '#EA91FF',
-  size = "normal", // Nueva prop
 }) {
   const [isCounting, setIsCounting] = React.useState(true);
 
@@ -19,9 +18,7 @@ export default function SkillItem({
     duration: 1,
     start: 0,
     end: percentage,
-    onComplete: () => {
-      setIsCounting(false);
-    },
+    onComplete: () => setIsCounting(false),
   });
 
   const handleMouseEnter = () => {
@@ -29,26 +26,30 @@ export default function SkillItem({
     setIsCounting(true);
   };
 
-  const progressSize = size === "small" ? "35px" : "45px";
-  const iconSize = size === "small" ? 28 : 38;
-
   return (
     <div
-      className="inline-block m-1 hover:translate-y-1 transition ease-in-out duration-300"
+      className="hover:translate-y-1 transition ease-in-out duration-300"
       onMouseEnter={handleMouseEnter}
     >
       <CircularProgress
         determinate
         value={value}
         sx={{
-          '--CircularProgress-size': progressSize,
-          '--CircularProgress-trackThickness': '2px',
-          '--CircularProgress-progressThickness': '4px',
+          '--CircularProgress-size': '50px', // Círculo fijo
+          '--CircularProgress-trackThickness': '3px',
+          '--CircularProgress-progressThickness': '5px',
           '--CircularProgress-trackColor': trackColor,
           '--CircularProgress-progressColor': progressColor,
         }}
       >
-        <Image src={iconSrc} height={iconSize} width={iconSize} alt="Skill Icon" />
+        {/* Imagen más grande en md+ */}
+        <Image
+          src={iconSrc}
+          alt="Skill Icon"
+          width={24} // Base (mobile)
+          height={24}
+          className="sm:w-[28px] sm:h-[28px] md:w-[34px] md:h-[34px] lg:w-[40px] lg:h-[40px]"
+        />
       </CircularProgress>
     </div>
   );

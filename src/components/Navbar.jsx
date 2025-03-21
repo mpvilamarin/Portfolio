@@ -10,9 +10,9 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Navbar Desktop */}
-      <nav className="fixed top-0 left-0 w-full z-50 hidden md:flex justify-end pr-10 py-4">
-        <ul className="flex space-x-10 items-center text-robotoMono text-sm text-green">
+      {/* Navbar Desktop – desde lg */}
+      <nav className="fixed top-0 left-0 w-full z-50 hidden lg:flex justify-end pr-10 py-4">
+        <ul className="flex space-x-10 items-center text-robotoMono text-base text-green">
           <li>
             <Link href="/#about" className="hover:text-purple transition">Sobre mí</Link>
           </li>
@@ -52,17 +52,16 @@ const Navbar = () => {
         </ul>
       </nav>
 
-      {/* Navbar Mobile */}
-      <div className="md:hidden fixed top-4 right-4 z-50">
+      {/* Navbar Mobile + Tablet (hasta md inclusive) */}
+      <div className="lg:hidden fixed top-4 right-4 z-50">
         <button
           onClick={() => setOpenMenu(!openMenu)}
-          className={`text-xl focus:outline-none ${openMenu ? "text-purple" : "text-green"
-            }`}
+          className={`text-xl focus:outline-none ${openMenu ? "text-purple" : "text-green"}`}
         >
           {openMenu ? <FaTimes /> : <FaBars />}
         </button>
 
-        {/* Mini menú desplegable al lado del botón */}
+        {/* Menú al lado del botón */}
         <AnimatePresence>
           {openMenu && (
             <motion.div
@@ -70,16 +69,16 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute right-0 mt-2 w-32 bg-blackLight border-2 border-purple rounded-md shadow-lg z-40"
+              className="absolute right-0 mt-2 w-40 bg-blackLight border-2 border-purple rounded-md shadow-lg z-40"
             >
-              <ul className="flex flex-col text-purple text-sm font-robotoMono py-2">
+              <ul className="flex flex-col text-purple text-sm font-robotoMono py-2 md:text-base mt-2">
                 <li className="px-4 hover:bg-green hover:text-blackLight transition">
                   <Link href="/#about" onClick={() => setOpenMenu(false)}>Sobre mí</Link>
                 </li>
-                <li className="px-4 hover:bg-green hover:text-blackLight transition">
+                <li className="px-4 hover:bg-green hover:text-blackLight transition md:text-base mt-2">
                   <Link href="/#projects" onClick={() => setOpenMenu(false)}>Proyectos</Link>
                 </li>
-                <li className="px-4 hover:bg-green hover:text-blackLight transition">
+                <li className="px-4 hover:bg-green hover:text-blackLight transition md:text-base mt-2">
                   <Link href="/contact" onClick={() => setOpenMenu(false)}>Contacto</Link>
                 </li>
 
@@ -87,9 +86,15 @@ const Navbar = () => {
                 <li className="relative px-4">
                   <button
                     onClick={() => setCvDropdown(!cvDropdown)}
-                    className="flex items-center gap-1 w-full focus:outline-none"
+                    className="flex items-center gap-1 w-full focus:outline-none md:text-base mt-2"
                   >
-                    CV <FaChevronDown className={`text-xs mt-0.5 transition-transform ${cvDropdown ? "rotate-90" : ""}`} />
+                    CV{" "}
+                    <motion.div
+                      animate={{ rotate: cvDropdown ? 90 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <FaChevronDown className="text-xs mt-0.5" />
+                    </motion.div>
                   </button>
                   <AnimatePresence>
                     {cvDropdown && (
@@ -105,7 +110,7 @@ const Navbar = () => {
                             href="https://drive.google.com/file/d/10llwvk38XZ80RsRpwt7MFKNmIVhVUPJp/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block px-4 text-green hover:opacity-60 text-xs"
+                            className="block px-4 text-green hover:opacity-60 text-xs md:text-base mt-2"
                             onClick={() => { setOpenMenu(false); setCvDropdown(false); }}
                           >
                             English
@@ -116,7 +121,7 @@ const Navbar = () => {
                             href="https://drive.google.com/file/d/1PtBtuDM-FsxTmfI0F50EyOC8PuIPTXZZ/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block px-4 text-green hover:opacity-60 text-xs"
+                            className="block px-4 text-green hover:opacity-60 text-xs md:text-base mt-2"
                             onClick={() => { setOpenMenu(false); setCvDropdown(false); }}
                           >
                             Español
