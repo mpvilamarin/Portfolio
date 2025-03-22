@@ -11,8 +11,8 @@ const Navbar = () => {
   return (
     <>
       {/* Navbar Desktop – desde lg */}
-      <nav className="fixed top-0 left-0 w-full z-50 hidden lg:flex justify-end pr-10 py-4">
-        <ul className="flex space-x-10 items-center text-robotoMono text-base text-green">
+      <nav className="fixed top-0 left-0 w-full z-50 hidden lg:flex justify-end pr-10 py-4 lg:right-0 lg:pr-20 lg:pt-8">
+        <ul className="flex space-x-10 items-center text-robotoMono text-base text-green lg:space-x-14">
           <li>
             <Link href="/#about" className="hover:text-purple transition">Sobre mí</Link>
           </li>
@@ -26,7 +26,7 @@ const Navbar = () => {
             <button className="flex items-center gap-1 focus:outline-none">
               CV <FaChevronDown className="text-green text-xs mt-0.5" />
             </button>
-            <ul className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-32 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white">
+            <ul className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-32 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <li>
                 <Link
                   href="https://drive.google.com/file/d/10llwvk38XZ80RsRpwt7MFKNmIVhVUPJp/view?usp=sharing"

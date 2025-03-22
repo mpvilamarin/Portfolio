@@ -35,12 +35,12 @@ export default function ProjectsContainer() {
   return (
     <div className="w-full mx-auto py-8">
       {/* Filtro de categorías */}
-      <div className="flex flex-wrap gap-2 justify-center">
+      <div className="flex flex-wrap gap-2 justify-center lg:mt-6">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-2 rounded-md font-robotoMono font-medium text-xs transition-colors
+            className={`px-4 py-2 rounded-md font-robotoMono font-medium text-xs transition-colors lg:text-base
               ${
                 selectedCategory === cat
                   ? "bg-purple text-blackLight font-bold"
@@ -53,7 +53,7 @@ export default function ProjectsContainer() {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6 lg:mt-8">
         {displayedProjects.map((project, index) => (
           <div key={index} className="rounded-md shadow-lg hover:opacity-70 transition-opacity">
             <Link href={`/projects/${project.slug}`}>
@@ -62,11 +62,11 @@ export default function ProjectsContainer() {
                 alt={project.title}
                 width={500}
                 height={300}
-                className="w-full h-[150px] object-cover object-top"
+                className="w-full h-[150px] lg:h-[250px] object-cover object-top"
               />
             </Link>
-            <div className="flex-col md:flex justify-between items-center bg-black px-2 py-2">
-              <h3 className="text-xs font-semibold font-montserrat text-purple">
+            <div className="flex-col md:flex justify-between items-center bg-black px-2 py-2 lg:flex-row lg:px-2">
+              <h3 className="text-xs lg:text-base font-semibold font-montserrat text-purple">
                 {project.title}
               </h3>
               <p className="text-xs font-robotoMono font-thin text-whiteCream italic">
@@ -82,7 +82,7 @@ export default function ProjectsContainer() {
         {filteredProjects.length > visibleCount && (
           <button
             onClick={handleShowMore}
-            className="bg-green text-blackLight text-xs font-semibold rounded-md px-4 py-2 font-robotoMono hover:translate-y-1 transition ease-in-out duration-300"
+            className="bg-green text-blackLight text-xs font-semibold rounded-md px-4 py-2 font-robotoMono hover:translate-y-1 transition ease-in-out duration-300 lg:text-base"
           >
             Ver más
           </button>
@@ -90,7 +90,7 @@ export default function ProjectsContainer() {
         {visibleCount > initialCount && (
           <button
             onClick={handleShowLess}
-            className="bg-transparent border-solid border-2 border-purple hover:translate-y-1 text-whiteCream text-xs font-medium rounded-md px-4 py-2 transition ease-in-out duration-300"
+            className="bg-transparent border-solid border-2 border-purple hover:translate-y-1 text-whiteCream text-xs font-medium rounded-md px-4 py-2 transition ease-in-out duration-300 lg:text-base"
           >
             Ver menos
           </button>

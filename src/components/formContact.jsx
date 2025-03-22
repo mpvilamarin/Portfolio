@@ -111,28 +111,28 @@ export const FormContact = () => {
             form.current,
             process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
         )
-        .then(
-            (result) => {
-                console.log("Email enviado:", result.text);
-                setFormSuccess("Mensaje enviado correctamente.");
-                // Reiniciar el formulario
-                setFormData({
-                    user_name: "",
-                    user_workType: "empresa",
-                    user_email: "",
-                    user_phone: "",
-                    message: "",
-                });
-                setTouched({});
-                // Ocultar el mensaje de éxito después de 3 segundos
-                setTimeout(() => {
-                    setFormSuccess("");
-                }, 3000);
-            },
-            (error) => {
-                console.error("Error al enviar email:", error.text);
-            }
-        );
+            .then(
+                (result) => {
+                    console.log("Email enviado:", result.text);
+                    setFormSuccess("Mensaje enviado correctamente.");
+                    // Reiniciar el formulario
+                    setFormData({
+                        user_name: "",
+                        user_workType: "empresa",
+                        user_email: "",
+                        user_phone: "",
+                        message: "",
+                    });
+                    setTouched({});
+                    // Ocultar el mensaje de éxito después de 3 segundos
+                    setTimeout(() => {
+                        setFormSuccess("");
+                    }, 3000);
+                },
+                (error) => {
+                    console.error("Error al enviar email:", error.text);
+                }
+            );
     };
 
     const inputStyle = (field) => {
@@ -145,28 +145,32 @@ export const FormContact = () => {
     };
 
     return (
-        <form ref={form} onSubmit={handleSubmit} className="max-w-md mx-auto p-4">
+        <form
+            ref={form}
+            onSubmit={handleSubmit}
+            className="w-full max-w-[320px] sm:max-w-[400px] md:max-w-[450px] lg:max-w-md mx-auto p-2 sm:p-4"
+        >
             {/* Nombre */}
-            <div className="mb-4">
-                <label className="block text-green font-robotoMono text-sm">Nombre</label>
+            <div className="mb-3 sm:mb-4">
+                <label className="block text-green font-robotoMono text-xs sm:text-sm mb-1">Nombre</label>
                 <input
                     type="text"
                     name="user_name"
                     value={formData.user_name}
                     onChange={handleChange}
                     onBlur={() => handleBlur("user_name")}
-                    className={`w-full h-8 p-2 border ${inputStyle("user_name")} rounded bg-transparent`}
+                    className={`w-full h-8 p-2 border ${inputStyle("user_name")} rounded bg-transparent text-xs sm:text-sm`}
                 />
                 {errors.user_name && touched.user_name && (
-                    <p className="text-red-500 font-robotoMono text-xs">{errors.user_name}</p>
+                    <p className="text-red-500 font-robotoMono text-xs mt-1">{errors.user_name}</p>
                 )}
             </div>
 
-            {/* Radio: Empresa / Freelance */}
-            <div className="mb-4">
-                <label className="block text-green font-robotoMono text-sm mb-2">Tipo de trabajo</label>
-                <div className="flex items-center">
-                    <label className="mr-4">
+            {/* Tipo de trabajo */}
+            <div className="mb-3 sm:mb-4">
+                <label className="block text-green font-robotoMono text-xs sm:text-sm mb-1">Tipo de trabajo</label>
+                <div className="flex items-center gap-4 text-whiteCream text-xs sm:text-sm">
+                    <label className="flex items-center">
                         <input
                             type="radio"
                             name="user_workType"
@@ -177,7 +181,7 @@ export const FormContact = () => {
                         />
                         Empresa
                     </label>
-                    <label>
+                    <label className="flex items-center">
                         <input
                             type="radio"
                             name="user_workType"
@@ -191,69 +195,67 @@ export const FormContact = () => {
                 </div>
             </div>
 
-            {/* Correo electrónico */}
-            <div className="mb-4">
-                <label className="block text-green font-robotoMono text-sm">Correo electrónico</label>
+            {/* Correo */}
+            <div className="mb-3 sm:mb-4">
+                <label className="block text-green font-robotoMono text-xs sm:text-sm mb-1">Correo electrónico</label>
                 <input
                     type="email"
                     name="user_email"
                     value={formData.user_email}
                     onChange={handleChange}
                     onBlur={() => handleBlur("user_email")}
-                    className={`w-full h-8 p-2 border ${inputStyle("user_email")} rounded bg-transparent`}
+                    className={`w-full h-8 p-2 border ${inputStyle("user_email")} rounded bg-transparent text-xs sm:text-sm`}
                 />
                 {errors.user_email && touched.user_email && (
-                    <p className="text-red-500 font-robotoMono text-xs">{errors.user_email}</p>
+                    <p className="text-red-500 font-robotoMono text-xs mt-1">{errors.user_email}</p>
                 )}
             </div>
 
-            {/* Número telefónico */}
-            <div className="mb-4">
-                <label className="block text-green font-robotoMono text-sm">Número telefónico</label>
+            {/* Teléfono */}
+            <div className="mb-3 sm:mb-4">
+                <label className="block text-green font-robotoMono text-xs sm:text-sm mb-1">Número telefónico</label>
                 <input
                     type="tel"
                     name="user_phone"
                     value={formData.user_phone}
                     onChange={handleChange}
                     onBlur={() => handleBlur("user_phone")}
-                    className={`w-full h-8 p-2 border ${inputStyle("user_phone")} rounded bg-transparent`}
+                    className={`w-full h-8 p-2 border ${inputStyle("user_phone")} rounded bg-transparent text-xs sm:text-sm`}
                 />
                 {errors.user_phone && touched.user_phone && (
-                    <p className="text-red-500 font-robotoMono text-xs">{errors.user_phone}</p>
+                    <p className="text-red-500 font-robotoMono text-xs mt-1">{errors.user_phone}</p>
                 )}
             </div>
 
             {/* Mensaje */}
-            <div className="mb-4">
-                <label className="block text-green font-robotoMono text-sm">Mensaje</label>
+            <div className="mb-3 sm:mb-4">
+                <label className="block text-green font-robotoMono text-xs sm:text-sm mb-1">Mensaje</label>
                 <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     onBlur={() => handleBlur("message")}
-                    className={`w-full h-20 p-2 border ${inputStyle("message")} rounded bg-transparent`}
-                    rows="5"
+                    className={`w-full p-2 border ${inputStyle("message")} rounded bg-transparent text-xs sm:text-sm`}
+                    rows="4"
                 />
                 {errors.message && touched.message && (
-                    <p className="text-red-500 font-robotoMono text-xs">{errors.message}</p>
+                    <p className="text-red-500 font-robotoMono text-xs mt-1">{errors.message}</p>
                 )}
             </div>
 
+            {/* Botón */}
             <button
                 type="submit"
-                className="w-full bg-green text-blackLight rounded-md px-6 py-2 text-1xl text-[600] font-robotoMono hover:bg-transparent hover:border-solid hover:border-green hover:border-2 hover:text-whiteCream transition ease-in-out duration-300"
+                className="w-full bg-green text-blackLight rounded-md px-4 py-2 text-xs sm:text-sm font-robotoMono font-semibold hover:bg-transparent hover:border-green hover:border hover:text-whiteCream transition"
             >
                 Enviar
             </button>
+
             {formSubmissionError && (
-                <p className="text-red-500 font-robotoMono text-xs mt-2">
-                    {formSubmissionError}
-                </p>
+                <p className="text-red-500 font-robotoMono text-xs mt-2">{formSubmissionError}</p>
             )}
             {formSuccess && (
-                <p className="text-green-500 font-robotoMono text-xs mt-2">
-                    {formSuccess}
-                </p>
+                <p className="text-green-500 font-robotoMono text-xs mt-2">{formSuccess}</p>
             )}
         </form>
     );
