@@ -58,7 +58,7 @@ export default function ProjectsContainer() {
           <div key={index} className="rounded-md shadow-lg hover:opacity-70 transition-opacity">
             <Link href={`/projects/${project.slug}`}>
               <Image
-                src={project.image}
+                src={project.frontImage}
                 alt={project.title}
                 width={500}
                 height={300}

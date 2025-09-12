@@ -5,7 +5,8 @@
       subtitle: 'Modernización y optimización para una mejor experiencia',
       client: 'Resistance',
       description: 'Resistance necesitaba una web más moderna, funcional y alineada con su identidad. Rediseñé la estructura y el diseño para mejorar la accesibilidad, la navegación y la experiencia del usuario. Implementé Next.js y CSS Modules para optimizar el rendimiento, mejorar la organización del contenido y potenciar el posicionamiento SEO. El resultado: un sitio más limpio, rápido y fácil de explorar.',
-      image: '/projects/Resistance - rediseño.png',
+      frontImage: '/projects/Resistance - rediseño.png',
+      image: '/projects/Resistance - Web.png',
       url: 'https://resistance.com.co',
       category: "website Design"
     },

@@ -78,13 +78,23 @@ export default async function ProjectPage({ params }) {
         {/* Contenedor de imagen con 40% de ancho y altura fija */}
         <div className="relative w-[40%] h-[80vh]">
           <Image
-            src={project.image}
+            src={project.frontImage}
             alt={project.title}
             fill
             style={{ objectFit: 'cover', objectPosition: 'top' }}
             className="mb-4"
           />
         </div>
+      </section>
+      <section  className="flex items-center px-12 gap-20">
+        <Image
+          src={project.image}
+          alt={project.title}
+          width={1920}
+          height={3500}
+          style={{ objectFit: 'cover', objectPosition: 'top' }}
+          className="mb-4"
+        />
       </section>
     </Layout>
   );

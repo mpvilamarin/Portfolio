@@ -4,6 +4,7 @@ import React from 'react';
 import AboutMe from '@/components/AboutMe';
 import { Projects } from '@/components/Projects';
 import Image from 'next/image';
+import { Services } from '@/components/Services';
 
 export const metadata = {
   title: 'Home | Paula Villamarín',
@@ -13,10 +14,10 @@ export const metadata = {
 function HomePage() {
   return (
     <>
-      <div className="min-h-screen lg:h-screen lg:overflow-y-scroll lg:snap-y lg:snap-mandatory lg:scroll-smooth">
-        <main className="min-h-screen flex flex-col px-6 sm:px-12 md:px-6 lg:py-16 lg:px-16">
+      <div className="min-h-screen lg:h-screen lg:scroll-smooth lg:px-16 px-6 sm:px-12 md:px-6">
+        <main className="min-h-screen flex flex-col">
           {/* Sección Inicial */}
-          <section className="flex flex-col lg:flex-row">
+          <section className="flex flex-col lg:flex-row lg:mt-8">
             <div className="min-h-screen snap-start flex flex-col justify-center items-center text-center lg:items-start lg:text-left">
               <h1 className="font-montserrat text-5xl sm:text-5xl md:text-7xl lg:text-7xl font-thin text-whiteCream">
                 PAULA
@@ -42,7 +43,7 @@ function HomePage() {
               </div>
 
               {/* Íconos */}
-              <div className="flex space-x-6 items-center justify-center lg:justify-start mt-20 md:mt-20 lg:mt-32">
+              <div className="flex space-x-6 items-center justify-center lg:justify-start mt-20 md:mt-20 lg:mt-20">
                 <Link href="https://github.com/mpvilamarin" target="_blank" rel="noopener noreferrer">
                   <FaGithub size={20} className="lg:size-6 hover:translate-y-1 transition md:size-7" />
                 </Link>
@@ -58,14 +59,16 @@ function HomePage() {
               </div>
             </div>
           </section>
-
+          <section id="services" className="flex items-center justify-center py-24">
+            <Services />
+          </section>
           {/* Sección About Me */}
-          <section id="about" className="min-h-screen lg:snap-start flex items-center justify-center mt-4">
+          <section id="about" className="flex items-center justify-center py-24">
             <AboutMe />
           </section>
 
           {/* Sección Projects */}
-          <section id="projects" className="lg:snap-start flex items-center justify-center mt-4">
+          <section id="projects" className="flex items-center justify-center py-24">
             <Projects />
           </section>
         </main>
