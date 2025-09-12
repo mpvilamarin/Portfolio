@@ -1,6 +1,4 @@
 import React from 'react'
-import Head from 'next/head';
-import Layout from '../layout';
 import Link from 'next/link';
 import { FormContact } from '@/components/formContact';
 
@@ -9,9 +7,8 @@ export const metadata = {
     description: 'Ponte en contacto con Paula, desarrolladora frontend y diseñadora gráfica. Estoy disponible para colaborar en proyectos y discutir ideas innovadoras en diseño y desarrollo web.',
   };
 
-  function contact() {
+  function Contact() {
     return (
-      <Layout>
         <main className="flex flex-col lg:flex-row min-h-screen items-center px-6 sm:px-12 md:px-16 lg:px-24 pt-16 pb-8 gap-6">
           {/* Descripción */}
           <section className="w-full lg:w-1/2 text-center lg:text-left">
@@ -35,8 +32,7 @@ export const metadata = {
             <FormContact />
           </section>
         </main>
-      </Layout>
     );
   }
   
-  export default contact;  
+  export default Contact;  
