@@ -9,7 +9,7 @@ export const metadata = {
     description: 'Ponte en contacto con Paula, desarrolladora frontend y diseñadora gráfica. Estoy disponible para colaborar en proyectos y discutir ideas innovadoras en diseño y desarrollo web.',
   };
 
-  function Contact() {
+  function contact() {
     return (
       <Layout>
         <main className="flex flex-col lg:flex-row min-h-screen items-center px-6 sm:px-12 md:px-16 lg:px-24 pt-16 pb-8 gap-6">
@@ -39,4 +39,4 @@ export const metadata = {
     );
   }
   
-  export default Contact;  
+  export default contact;  
