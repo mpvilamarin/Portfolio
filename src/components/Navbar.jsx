@@ -20,7 +20,7 @@ const Navbar = () => {
             <Link href="/#projects" className="hover:text-purple transition">Proyectos</Link>
           </li>
           <li>
-            <Link href="/contact" className="hover:text-purple transition">Contacto</Link>
+            <Link href="/contactform" className="hover:text-purple transition">Contacto</Link>
           </li>
           <li className="relative group">
             <button className="flex items-center gap-1 focus:outline-none">
