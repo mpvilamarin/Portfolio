@@ -1,133 +1,169 @@
-"use client";
-import Link from "next/link";
-import React, { useState } from "react";
-import { FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+'use client';
+import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
+import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import LightbulbToggle from './LightbulbToggle';
+
+const navLinks = [
+  { href: '/#about',    label: 'SOBRE MÍ',   num: '01' },
+  { href: '/#projects', label: 'PROYECTOS',  num: '02' },
+  { href: '/contactform', label: 'CONTACTO', num: '03' },
+];
+
+const cvLinks = [
+  { href: 'https://drive.google.com/file/d/10llwvk38XZ80RsRpwt7MFKNmIVhVUPJp/view?usp=sharing', label: 'English' },
+  { href: 'https://drive.google.com/file/d/1PtBtuDM-FsxTmfI0F50EyOC8PuIPTXZZ/view?usp=sharing', label: 'Español' },
+];
 
 const Navbar = () => {
-  const [openMenu, setOpenMenu] = useState(false);
+  const [openMenu, setOpenMenu]     = useState(false);
   const [cvDropdown, setCvDropdown] = useState(false);
+  const [scrolled, setScrolled]     = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <>
-      {/* Navbar Desktop – desde lg */}
-      <nav className="fixed top-0 left-0 w-full z-50 hidden lg:flex justify-end pr-10 py-4 lg:right-0 lg:pr-20 lg:pt-8">
-        <ul className="flex space-x-10 items-center text-robotoMono text-base text-green lg:space-x-14">
-          <li>
-            <Link href="/#about" className="hover:text-purple transition">Sobre mí</Link>
-          </li>
-          <li>
-            <Link href="/#projects" className="hover:text-purple transition">Proyectos</Link>
-          </li>
-          <li>
-            <Link href="/contactform" className="hover:text-purple transition">Contacto</Link>
-          </li>
+      {/* ── Desktop nav (lg+) ───────────────────────────── */}
+      <nav
+        className={`fixed top-0 left-0 w-full z-50 hidden lg:flex items-center justify-between
+          px-12 xl:px-20 py-5 transition-all duration-500
+          ${scrolled ? 'bg-base/80 backdrop-blur-xl border-b border-line' : ''}`}
+      >
+        {/* Logo */}
+        <Link
+          href="/"
+          className="font-mono text-xs text-muted hover:text-accent transition-colors duration-300 tracking-[4px]"
+        >
+          PV<span className="text-accent">.</span>
+        </Link>
+
+        {/* Links */}
+        <ul className="flex items-center gap-10 font-mono text-[11px] tracking-[3px]">
+          {navLinks.map(({ href, label, num }) => (
+            <li key={href}>
+              <Link
+                href={href}
+                className="relative group flex items-center gap-1.5 text-muted hover:text-white transition-colors duration-300"
+              >
+                <span className="text-accent text-[9px]">{num}/</span>
+                {label}
+                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-accent group-hover:w-full transition-all duration-300" />
+              </Link>
+            </li>
+          ))}
+
+          {/* CV dropdown */}
           <li className="relative group">
-            <button className="flex items-center gap-1 focus:outline-none">
-              CV <FaChevronDown className="text-green text-xs mt-0.5" />
+            <button className="flex items-center gap-1.5 text-muted hover:text-white transition-colors duration-300 text-[11px] tracking-[3px]">
+              <span className="text-accent text-[9px]">04/</span>
+              CV
+              <FaChevronDown className="text-[9px] transition-transform duration-300 group-hover:rotate-180" />
             </button>
-            <ul className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-32 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <li>
+            <div className="absolute right-0 top-full mt-3 w-28 opacity-0 pointer-events-none
+              group-hover:opacity-100 group-hover:pointer-events-auto
+              transition-all duration-300 bg-surface border border-line rounded overflow-hidden">
+              {cvLinks.map(({ href, label }) => (
                 <Link
-                  href="https://drive.google.com/file/d/10llwvk38XZ80RsRpwt7MFKNmIVhVUPJp/view?usp=sharing"
+                  key={label}
+                  href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block px-4 py-2 text-green hover:opacity-60 transition text-sm"
+                  className="block px-4 py-3 font-mono text-[11px] text-muted hover:text-accent hover:bg-elevated transition-colors border-b border-line last:border-0"
                 >
-                  English
+                  {label}
                 </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://drive.google.com/file/d/1PtBtuDM-FsxTmfI0F50EyOC8PuIPTXZZ/view?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block px-4 py-2 text-green hover:opacity-60 transition text-sm"
-                >
-                  Español
-                </Link>
-              </li>
-            </ul>
+              ))}
+            </div>
+          </li>
+
+          {/* Bombilla toggle */}
+          <li className="flex items-center">
+            <LightbulbToggle />
           </li>
         </ul>
       </nav>
 
-      {/* Navbar Mobile + Tablet (hasta md inclusive) */}
-      <div className="lg:hidden fixed top-4 right-4 z-50">
+      {/* ── Mobile nav (< lg) ───────────────────────────── */}
+      <div className="lg:hidden fixed top-4 right-4 z-50 flex items-center gap-2">
+        {/* Bombilla toggle en mobile */}
+        <LightbulbToggle />
+
         <button
           onClick={() => setOpenMenu(!openMenu)}
-          className={`text-xl focus:outline-none ${openMenu ? "text-purple" : "text-green"}`}
+          className="w-9 h-9 flex items-center justify-center border border-line rounded text-muted
+            hover:text-accent hover:border-accent/50 transition-colors duration-300"
         >
-          {openMenu ? <FaTimes /> : <FaBars />}
+          {openMenu ? <FaTimes size={13} /> : <FaBars size={13} />}
         </button>
 
-        {/* Menú al lado del botón */}
         <AnimatePresence>
           {openMenu && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="absolute right-0 mt-2 w-40 bg-blackLight border-2 border-purple rounded-md shadow-lg z-40"
+              initial={{ opacity: 0, y: -8, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0,  scale: 1 }}
+              exit={{ opacity: 0,  y: -8, scale: 0.97 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="absolute right-0 mt-2 w-48 bg-surface border border-line rounded shadow-2xl overflow-hidden"
             >
-              <ul className="flex flex-col text-purple text-sm font-robotoMono py-2 md:text-base mt-2">
-                <li className="px-4 hover:bg-green hover:text-blackLight transition">
-                  <Link href="/#about" onClick={() => setOpenMenu(false)}>Sobre mí</Link>
-                </li>
-                <li className="px-4 hover:bg-green hover:text-blackLight transition md:text-base mt-2">
-                  <Link href="/#projects" onClick={() => setOpenMenu(false)}>Proyectos</Link>
-                </li>
-                <li className="px-4 hover:bg-green hover:text-blackLight transition md:text-base mt-2">
-                  <Link href="/contact" onClick={() => setOpenMenu(false)}>Contacto</Link>
-                </li>
+              <ul className="flex flex-col font-mono text-[11px] tracking-[2px]">
+                {navLinks.map(({ href, label, num }) => (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      onClick={() => setOpenMenu(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-muted hover:text-white hover:bg-elevated transition-colors border-b border-line"
+                    >
+                      <span className="text-accent text-[9px]">{num}/</span>
+                      {label}
+                    </Link>
+                  </li>
+                ))}
 
-                {/* Dropdown CV */}
-                <li className="relative px-4">
+                {/* CV dropdown mobile */}
+                <li>
                   <button
                     onClick={() => setCvDropdown(!cvDropdown)}
-                    className="flex items-center gap-1 w-full focus:outline-none md:text-base mt-2"
+                    className="w-full flex items-center gap-2 px-4 py-3 text-muted hover:text-white hover:bg-elevated transition-colors"
                   >
-                    CV{" "}
-                    <motion.div
-                      animate={{ rotate: cvDropdown ? 90 : 0 }}
+                    <span className="text-accent text-[9px]">04/</span>
+                    CV
+                    <motion.span
+                      animate={{ rotate: cvDropdown ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
+                      className="ml-auto"
                     >
-                      <FaChevronDown className="text-xs mt-0.5" />
-                    </motion.div>
+                      <FaChevronDown className="text-[9px]" />
+                    </motion.span>
                   </button>
+
                   <AnimatePresence>
                     {cvDropdown && (
-                      <motion.ul
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="mt-2 rounded shadow-md overflow-hidden"
+                        className="overflow-hidden bg-elevated"
                       >
-                        <li>
+                        {cvLinks.map(({ href, label }) => (
                           <Link
-                            href="https://drive.google.com/file/d/10llwvk38XZ80RsRpwt7MFKNmIVhVUPJp/view?usp=sharing"
+                            key={label}
+                            href={href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block px-4 text-green hover:opacity-60 text-xs md:text-base mt-2"
+                            className="block px-8 py-2.5 font-mono text-[11px] text-muted hover:text-accent transition-colors"
                             onClick={() => { setOpenMenu(false); setCvDropdown(false); }}
                           >
-                            English
+                            {label}
                           </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="https://drive.google.com/file/d/1PtBtuDM-FsxTmfI0F50EyOC8PuIPTXZZ/view?usp=sharing"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block px-4 text-green hover:opacity-60 text-xs md:text-base mt-2"
-                            onClick={() => { setOpenMenu(false); setCvDropdown(false); }}
-                          >
-                            Español
-                          </Link>
-                        </li>
-                      </motion.ul>
+                        ))}
+                      </motion.div>
                     )}
                   </AnimatePresence>
                 </li>

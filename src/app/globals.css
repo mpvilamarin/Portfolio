@@ -3,66 +3,172 @@
 @tailwind utilities;
 
 :root {
-  --background: #1A1A1A;
-  --foreground: #FCFCFC;
+  --bg:           #0D0709;
+  --surface:      #150B0D;
+  --accent:       #F43F5E;
+  --accent-light: #FB7185;
+  --primary:      #FFF1F2;
+  --muted:        #9D8B8E;
+  --line:         #2D1519;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #1A1A1A;
-    --foreground: #FCFCFC;
-  }
+/* ── Cursor ─────────────────────────────────── */
+* {
+  cursor: none;
+}
+a, button, [data-hover] {
+  cursor: none;
+}
+
+/* ── Base ────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: 'Montserrat', sans-serif;
-}
-
-p,
-h3,
-a {
+  background-color: var(--bg);
+  color: var(--primary);
   font-family: 'Roboto Mono', monospace;
+  overflow-x: hidden;
 }
 
-p,
-a {
-  font-size: 16px;
+/* ── Selection ───────────────────────────────── */
+::selection {
+  background-color: var(--accent);
+  color: var(--bg);
 }
 
-h1,
-h2 {
-  font-family: 'Montserrat', sans-serif;
+/* ── Scrollbar ───────────────────────────────── */
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
-/* Media queries para distintos breakpoints */
-
-/* Pantallas pequeñas: de 300px a 767px */
-@media screen and (min-width: 300px) and (max-width: 767px) {
-  p,
-  a {
-    font-size: 0.8em;
-  }
+/* ── Noise overlay (sutil) ───────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px;
 }
 
-/* Pantallas medianas: de 768px a 1199px */
-@media screen and (min-width: 768px) and (max-width: 1199px) {
+/* ════════════════════════════════════════════════
+   TEMA CLARO  —  html.light
+   Paleta: espejo del oscuro pero en rosa luminoso.
+   #0D0709 → #FEF0F5  /  texto oscuro cálido
+════════════════════════════════════════════════ */
 
+/* ── Variables del tema claro ── */
+html.light {
+  --cl-bg:       #FEF0F5;   /* fondo principal — rosa muy suave pero claramente rosa */
+  --cl-surface:  #FFF5F8;   /* superficie — blanco rosado (dropdown, menú) */
+  --cl-elevated: #FBD8E8;   /* elevado — rosa visible */
+  --cl-fg:       #2A0812;   /* texto principal — casi negro, tono vino */
+  --cl-accent:   #B81033;   /* acento — rosa oscuro con contraste */
+  --cl-muted:    #8A4A5C;   /* secundario — rosa-grisáceo */
+  --cl-line:     #F4C0D4;   /* bordes — rosa claro pero visible */
 }
 
-/* Pantallas grandes: de 1200px a 1440px */
-@media screen and (min-width: 1200px) and (max-width: 1440px) {
-  h1,
-  h2 {
-    font-size: 60px
-  }
-  h3 {
-    font-size: 22px
-  }
+html.light body {
+  background-color: var(--cl-bg);
+  color: var(--cl-fg);
 }
 
-/* Pantallas extra grandes: de 1440px en adelante */
-@media screen and (min-width: 1440px) {
+/* ── Fondos principales ── */
+html.light .bg-base     { background-color: var(--cl-bg)      !important; }
+html.light .bg-surface  { background-color: var(--cl-surface) !important; }
+html.light .bg-elevated { background-color: var(--cl-elevated)!important; }
 
+/* ── Texto ── */
+html.light .text-white      { color: var(--cl-fg)              !important; }
+html.light .text-primary    { color: var(--cl-fg)              !important; }
+/* Variantes con opacidad — cubre text-primary/85, text-white/85, etc. */
+html.light .text-white\/85,
+html.light .text-primary\/85 { color: rgba(42,8,18,0.55)       !important; }
+html.light .text-white\/70,
+html.light .text-primary\/70 { color: rgba(42,8,18,0.45)       !important; }
+html.light .text-muted      { color: var(--cl-muted)            !important; }
+html.light .text-accent     { color: var(--cl-accent)           !important; }
+html.light .text-line       { color: #DDA0B4                    !important; }
+
+/* ── Bordes y líneas ── */
+html.light .border-line             { border-color: var(--cl-line)   !important; }
+html.light .border-accent           { border-color: var(--cl-accent) !important; }
+html.light .border-accent\/50       { border-color: rgba(184,16,51,0.55) !important; }
+html.light .border-accent\/40       { border-color: rgba(184,16,51,0.45) !important; }
+
+/* ── Divide (grids con líneas) ── */
+html.light .divide-line > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--cl-line) !important;
+}
+
+/* ── Fondo del acento ── */
+html.light .bg-accent             { background-color: var(--cl-accent) !important; }
+
+/* ── Track de las SkillBars ── */
+html.light .bg-line               { background-color: var(--cl-line)   !important; }
+
+/* ── Glow blobs del hero (más visibles sobre rosa claro) ── */
+html.light .bg-accent\/\[0\.06\]  { background-color: rgba(184,16,51,0.10) !important; }
+html.light .bg-accent\/\[0\.04\]  { background-color: rgba(184,16,51,0.07) !important; }
+html.light .bg-accent\/\[0\.05\]  { background-color: rgba(184,16,51,0.08) !important; }
+
+/* ── Degradado hero/proyecto (from-base) ── */
+html.light .from-base {
+  --tw-gradient-from: var(--cl-bg) var(--tw-gradient-from-position) !important;
+}
+html.light .via-base\/60 {
+  --tw-gradient-via: rgba(254,240,245,0.6) var(--tw-gradient-via-position) !important;
+}
+
+/* ── Fondos con opacidad (project cards, overlays) ── */
+html.light .bg-base\/70  { background-color: rgba(254,240,245,0.84) !important; }
+html.light .bg-base\/80  { background-color: rgba(254,240,245,0.88) !important; }
+html.light .bg-base\/88  { background-color: rgba(254,240,245,0.92) !important; }
+
+/* ── Navbar con backdrop blur ── */
+html.light .backdrop-blur-xl {
+  background-color: rgba(254,240,245,0.88) !important;
+}
+
+/* ── Hover helpers ── */
+html.light .hover\:bg-surface:hover        { background-color: var(--cl-surface)  !important; }
+html.light .hover\:bg-elevated:hover       { background-color: var(--cl-elevated) !important; }
+html.light .hover\:text-white:hover        { color: var(--cl-fg)    !important; }
+html.light .hover\:bg-accent:hover         { background-color: var(--cl-accent) !important; }
+html.light .hover\:bg-accent-light:hover   { background-color: #C8264B !important; }
+
+/* ── Botones outline (border + text) ── */
+html.light .border-line.hover\:border-muted:hover   { border-color: var(--cl-muted) !important; }
+html.light .border-accent.hover\:text-base:hover    { color: #FEF0F5 !important; }
+
+/* ── Texto en hover sobre fondo oscuro (botones filled) ── */
+html.light .group:hover .relative.z-10 { color: #FEF0F5; }
+
+/* ── Scrollbar ── */
+html.light ::-webkit-scrollbar-track { background: var(--cl-bg); }
+html.light ::-webkit-scrollbar-thumb { background: var(--cl-line); }
+html.light ::-webkit-scrollbar-thumb:hover { background: var(--cl-accent); }
+
+/* ── Noise overlay — ligeramente más visible en claro ── */
+html.light body::before { opacity: 0.018; }
+
+/* ── Selección ── */
+html.light ::selection {
+  background-color: var(--cl-accent);
+  color: #FEF0F5;
 }
