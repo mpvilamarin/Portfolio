@@ -80,6 +80,13 @@ export const tr = {
         required:         'Todos los campos son obligatorios.',
       },
     },
+    projectPage: {
+      back:         'VOLVER',
+      label:        '// proyecto',
+      viewSite:     'Ver sitio',
+      allProjects:  'TODOS LOS PROYECTOS',
+      workTogether: '¿Trabajamos juntos? →',
+    },
     footer: { copy: '© 2025 Paula Villamarín' },
   },
 
@@ -160,6 +167,13 @@ export const tr = {
         error:            'Failed to send. Please try again.',
         required:         'All fields are required.',
       },
+    },
+    projectPage: {
+      back:         'BACK',
+      label:        '// project',
+      viewSite:     'View site',
+      allProjects:  'ALL PROJECTS',
+      workTogether: 'Work together? →',
     },
     footer: { copy: '© 2025 Paula Villamarín' },
   },
