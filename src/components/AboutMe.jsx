@@ -1,18 +1,24 @@
+'use client';
 import React from 'react';
 import SkillBar from './SkillBar';
 import { designSkills } from './designSkills';
 import { techSkills } from './techSkills';
 import FadeIn from './FadeIn';
+import { useLanguage } from '@/context/LanguageContext';
+import { tr } from '@/lib/translations';
 
 const AboutMe = () => {
+  const { lang } = useLanguage();
+  const tx = tr[lang].about;
+
   return (
     <div>
       {/* Header de sección */}
       <FadeIn>
         <div className="flex items-center gap-5 mb-12 lg:mb-16">
-          <span className="font-mono text-[10px] text-accent tracking-[4px]">02 /</span>
+          <span className="font-mono text-[10px] text-accent tracking-[4px]">{tx.sectionNum}</span>
           <h2 className="font-montserrat text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
-            SOBRE MÍ
+            {tx.heading}
           </h2>
           <div className="flex-1 h-px bg-line" />
         </div>
@@ -33,29 +39,20 @@ const AboutMe = () => {
 
           <FadeIn delay={0.2}>
             <p className="font-mono text-xs sm:text-sm text-muted leading-[1.9]">
-              Me adapto a diferentes estilos y necesidades, explorando tendencias
-              y buscando formas de hacer la web más intuitiva y atractiva. Mi
-              enfoque está en la accesibilidad, la interactividad y la experiencia
-              de usuario, siempre con una estructura bien organizada.
+              {tx.bio1}
             </p>
           </FadeIn>
 
           <FadeIn delay={0.28}>
             <p className="font-mono text-xs sm:text-sm text-muted leading-[1.9] mt-5">
-              Si quieres hablar de diseño, desarrollo o simplemente debatir sobre
-              la mejor forma de animar sin perder la paciencia, hablemos.
+              {tx.bio2}
             </p>
           </FadeIn>
 
           {/* Datos rápidos */}
           <FadeIn delay={0.36}>
             <div className="grid grid-cols-2 gap-4 mt-10 pt-10 border-t border-line">
-              {[
-                { label: 'Experiencia',  value: '+3 años' },
-                { label: 'Proyectos',    value: '+15'      },
-                { label: 'Especialidad', value: 'Frontend' },
-                { label: 'Idiomas',      value: 'ES · EN'  },
-              ].map(({ label, value }) => (
+              {tx.stats.map(({ label, value }) => (
                 <div key={label}>
                   <p className="font-mono text-[10px] text-accent tracking-widest uppercase mb-1">{label}</p>
                   <p className="font-montserrat font-bold text-white text-sm">{value}</p>
@@ -71,7 +68,7 @@ const AboutMe = () => {
           <FadeIn delay={0.15}>
             <div className="mb-10">
               <p className="font-mono text-[10px] text-accent tracking-[5px] uppercase mb-6">
-                Diseño
+                {tx.design}
               </p>
               <div className="flex flex-col gap-5">
                 {designSkills.map((skill) => (
@@ -88,7 +85,7 @@ const AboutMe = () => {
           <FadeIn delay={0.25}>
             <div>
               <p className="font-mono text-[10px] text-accent tracking-[5px] uppercase mb-6">
-                Front-End
+                {tx.frontend}
               </p>
               <div className="flex flex-col gap-5">
                 {techSkills.map((skill) => (

@@ -3,6 +3,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import CustomCursor from '@/components/CustomCursor';
 import { Analytics } from '@vercel/analytics/react';
+import { LanguageProvider } from '@/context/LanguageContext';
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -36,9 +37,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${montserrat.variable} ${robotoMono.variable} antialiased bg-base`}
       >
-        <CustomCursor />
-        <Navbar />
-        {children}
+        <LanguageProvider>
+          <CustomCursor />
+          <Navbar />
+          {children}
+        </LanguageProvider>
         <Analytics />
       </body>
     </html>

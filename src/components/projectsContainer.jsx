@@ -5,17 +5,21 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projects } from './projectsContent';
 import FadeIn from './FadeIn';
-
-const categories = ['All', 'Website Design', 'Social Media', 'University', 'Branding'];
+import { useLanguage } from '@/context/LanguageContext';
+import { tr } from '@/lib/translations';
 
 export default function ProjectsContainer() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [visibleCount, setVisibleCount] = useState(6);
   const INITIAL = 6;
+  const { lang } = useLanguage();
+  const tx = tr[lang].projects;
+  const categories = tx.categories;
 
   const filtered = selectedCategory === 'All'
     ? projects
     : projects.filter((p) => p.category === selectedCategory);
+
 
   const displayed = filtered.slice(0, visibleCount);
 
@@ -24,18 +28,18 @@ export default function ProjectsContainer() {
       {/* ── Filtros ──────────────────────────────────── */}
       <FadeIn delay={0.15}>
         <div className="flex flex-wrap gap-2 mb-8 lg:mb-10">
-          {categories.map((cat) => (
+          {categories.map(({ value, label }) => (
             <button
-              key={cat}
-              onClick={() => { setSelectedCategory(cat); setVisibleCount(INITIAL); }}
+              key={value}
+              onClick={() => { setSelectedCategory(value); setVisibleCount(INITIAL); }}
               className={`font-mono text-[10px] tracking-[3px] uppercase px-4 py-2 rounded
                 transition-all duration-300
-                ${selectedCategory === cat
+                ${selectedCategory === value
                   ? 'bg-accent text-base font-bold'
                   : 'border border-line text-muted hover:border-accent/40 hover:text-white'
                 }`}
             >
-              {cat}
+              {label}
             </button>
           ))}
         </div>
@@ -48,6 +52,7 @@ export default function ProjectsContainer() {
             key={`${project.slug}-${index}`}
             project={project}
             index={index}
+            viewLabel={tx.viewProject}
           />
         ))}
       </div>
@@ -61,7 +66,7 @@ export default function ProjectsContainer() {
               className="font-mono text-[10px] tracking-[3px] uppercase
                 bg-accent text-base px-7 py-3 rounded hover:bg-accent-light transition-colors duration-300"
             >
-              Ver más +
+              {tx.loadMore}
             </button>
           )}
           {visibleCount > INITIAL && (
@@ -71,7 +76,7 @@ export default function ProjectsContainer() {
                 border border-line text-muted px-7 py-3 rounded
                 hover:border-muted hover:text-white transition-colors duration-300"
             >
-              Ver menos
+              {tx.showLess}
             </button>
           )}
         </div>
@@ -81,7 +86,7 @@ export default function ProjectsContainer() {
 }
 
 /* ── Tarjeta individual ─────────────────────────────── */
-function ProjectCard({ project, index }) {
+function ProjectCard({ project, index, viewLabel }) {
   const [hovered, setHovered] = useState(false);
   const hasImage = !!project.frontImage;
 
@@ -155,7 +160,7 @@ function ProjectCard({ project, index }) {
                   {project.client}
                 </p>
                 <div className="flex items-center gap-1.5">
-                  <span className="font-mono text-[10px] text-accent tracking-widest">Ver proyecto</span>
+                  <span className="font-mono text-[10px] text-accent tracking-widest">{viewLabel}</span>
                   <span className="text-accent text-xs">→</span>
                 </div>
               </motion.div>

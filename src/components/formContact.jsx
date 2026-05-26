@@ -7,13 +7,17 @@ import {
   validatePhone,
   validateMessage,
 } from './validations';
+import { useLanguage } from '@/context/LanguageContext';
+import { tr } from '@/lib/translations';
 
 export const FormContact = () => {
   const form = useRef();
+  const { lang } = useLanguage();
+  const tx = tr[lang].contact.form;
 
   const [formData, setFormData] = useState({
     user_name: '',
-    user_workType: 'empresa',
+    user_workType: '',
     user_email: '',
     user_phone: '',
     message: '',
@@ -68,7 +72,7 @@ export const FormContact = () => {
     setTouched(Object.fromEntries(fields.map((f) => [f, true])));
 
     const hasEmpty = fields.some((f) => !formData[f].trim());
-    if (hasEmpty) { setSubmissionError('Todos los campos son obligatorios.'); return; }
+    if (hasEmpty) { setSubmissionError(tx.required); return; }
 
     const fieldErrors = Object.fromEntries(
       fields.map((f) => [f, validateField(f, formData[f])])
@@ -85,12 +89,12 @@ export const FormContact = () => {
         form.current,
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
       );
-      setSuccessMsg('Mensaje enviado. ¡Hablamos pronto!');
-      setFormData({ user_name: '', user_workType: 'empresa', user_email: '', user_phone: '', message: '' });
+      setSuccessMsg(tx.success);
+      setFormData({ user_name: '', user_workType: '', user_email: '', user_phone: '', message: '' });
       setTouched({});
       setTimeout(() => setSuccessMsg(''), 4000);
     } catch {
-      setSubmissionError('Error al enviar. Intenta de nuevo.');
+      setSubmissionError(tx.error);
     } finally {
       setSending(false);
     }
@@ -115,7 +119,7 @@ export const FormContact = () => {
       {/* Nombre */}
       <div>
         <label className="block font-mono text-[10px] text-accent tracking-[3px] uppercase mb-1">
-          Nombre
+          {tx.name}
         </label>
         <input
           type="text"
@@ -123,7 +127,7 @@ export const FormContact = () => {
           value={formData.user_name}
           onChange={handleChange}
           onBlur={() => handleBlur('user_name')}
-          placeholder="Tu nombre completo"
+          placeholder={tx.namePlaceholder}
           className={fieldClass('user_name')}
         />
         {touched.user_name && errors.user_name && (
@@ -134,10 +138,10 @@ export const FormContact = () => {
       {/* Tipo de trabajo */}
       <div>
         <label className="block font-mono text-[10px] text-accent tracking-[3px] uppercase mb-3">
-          Tipo de trabajo
+          {tx.workType}
         </label>
         <div className="flex gap-6">
-          {['empresa', 'freelance'].map((type) => (
+          {tx.workTypes.map((type) => (
             <label key={type} className="flex items-center gap-2 cursor-none">
               <div className="relative">
                 <input
@@ -164,7 +168,7 @@ export const FormContact = () => {
       {/* Email */}
       <div>
         <label className="block font-mono text-[10px] text-accent tracking-[3px] uppercase mb-1">
-          Correo electrónico
+          {tx.email}
         </label>
         <input
           type="email"
@@ -172,7 +176,7 @@ export const FormContact = () => {
           value={formData.user_email}
           onChange={handleChange}
           onBlur={() => handleBlur('user_email')}
-          placeholder="tu@correo.com"
+          placeholder={tx.emailPlaceholder}
           className={fieldClass('user_email')}
         />
         {touched.user_email && errors.user_email && (
@@ -183,7 +187,7 @@ export const FormContact = () => {
       {/* Teléfono */}
       <div>
         <label className="block font-mono text-[10px] text-accent tracking-[3px] uppercase mb-1">
-          Teléfono
+          {tx.phone}
         </label>
         <input
           type="tel"
@@ -191,7 +195,7 @@ export const FormContact = () => {
           value={formData.user_phone}
           onChange={handleChange}
           onBlur={() => handleBlur('user_phone')}
-          placeholder="Número de contacto"
+          placeholder={tx.phonePlaceholder}
           className={fieldClass('user_phone')}
         />
         {touched.user_phone && errors.user_phone && (
@@ -202,14 +206,14 @@ export const FormContact = () => {
       {/* Mensaje */}
       <div>
         <label className="block font-mono text-[10px] text-accent tracking-[3px] uppercase mb-1">
-          Mensaje
+          {tx.message}
         </label>
         <textarea
           name="message"
           value={formData.message}
           onChange={handleChange}
           onBlur={() => handleBlur('message')}
-          placeholder="Cuéntame sobre tu proyecto..."
+          placeholder={tx.msgPlaceholder}
           rows={4}
           className={`${fieldClass('message')} resize-none`}
         />
@@ -228,7 +232,7 @@ export const FormContact = () => {
           transition-colors duration-300"
       >
         <span className="relative z-10">
-          {sending ? 'Enviando...' : 'Enviar mensaje'}
+          {sending ? tx.sending : tx.send}
         </span>
         <span className="absolute inset-0 bg-accent translate-x-[-101%]
           group-hover:translate-x-0 transition-transform duration-300 ease-out

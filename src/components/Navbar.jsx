@@ -4,11 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import LightbulbToggle from './LightbulbToggle';
+import LanguageToggle from './LanguageToggle';
+import { useLanguage } from '@/context/LanguageContext';
+import { tr } from '@/lib/translations';
 
-const navLinks = [
-  { href: '/#about',    label: 'SOBRE MÍ',   num: '01' },
-  { href: '/#projects', label: 'PROYECTOS',  num: '02' },
-  { href: '/contactform', label: 'CONTACTO', num: '03' },
+const navLinksBase = [
+  { href: '/#about',      key: 'about',    num: '01' },
+  { href: '/#projects',   key: 'projects', num: '02' },
+  { href: '/contactform', key: 'contact',  num: '03' },
 ];
 
 const cvLinks = [
@@ -20,6 +23,9 @@ const Navbar = () => {
   const [openMenu, setOpenMenu]     = useState(false);
   const [cvDropdown, setCvDropdown] = useState(false);
   const [scrolled, setScrolled]     = useState(false);
+  const { lang } = useLanguage();
+  const tx = tr[lang].nav;
+  const navLinks = navLinksBase.map((l) => ({ ...l, label: tx[l.key] }));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -82,6 +88,11 @@ const Navbar = () => {
             </div>
           </li>
 
+          {/* Language toggle */}
+          <li className="flex items-center">
+            <LanguageToggle />
+          </li>
+
           {/* Bombilla toggle */}
           <li className="flex items-center">
             <LightbulbToggle />
@@ -91,6 +102,8 @@ const Navbar = () => {
 
       {/* ── Mobile nav (< lg) ───────────────────────────── */}
       <div className="lg:hidden fixed top-4 right-4 z-50 flex items-center gap-2">
+        {/* Language toggle en mobile */}
+        <LanguageToggle />
         {/* Bombilla toggle en mobile */}
         <LightbulbToggle />
 
