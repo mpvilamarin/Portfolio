@@ -6,10 +6,11 @@ import { useLanguage } from '@/context/LanguageContext';
 import { tr } from '@/lib/translations';
 import { getAllProjects } from '@/components/projectsContent';
 import FadeIn from '@/components/FadeIn';
+import SkillBar from '@/components/SkillBar';
 
 function SectionLabel({ text }) {
   return (
-    <div className="flex items-center gap-4 mb-10 lg:mb-12">
+    <div className="flex items-center gap-4 mb-6 lg:mb-8">
       <span className="font-mono text-[10px] text-muted tracking-[4px] uppercase whitespace-nowrap">
         {text}
       </span>
@@ -42,7 +43,8 @@ export default function ProjectPageContent({ project }) {
     ? project.url.startsWith('http') ? project.url : `https://${project.url}`
     : null;
   const siteLabel = hasUrl ? project.url.replace(/^https?:\/\//, '') : null;
-  const hasImage = project.image && project.image !== '/project.jpg';
+  const gallery  = project.gallery?.filter(Boolean) ?? [];
+  const hasImage = gallery.length > 0;
   const hasTags  = project.tags?.length > 0;
 
   const prevTitle = prevProject
@@ -229,7 +231,7 @@ export default function ProjectPageContent({ project }) {
       {/* ══════════════════════════════════════════
           OVERVIEW
       ══════════════════════════════════════════ */}
-      <section className="px-6 sm:px-12 lg:px-20 xl:px-28 py-20 lg:py-28 border-b border-line">
+      <section className="px-6 sm:px-12 lg:px-20 xl:px-28 py-12 lg:py-16 border-b border-line">
         <SectionLabel text="// overview" />
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-20 items-start">
           <div>
@@ -259,16 +261,9 @@ export default function ProjectPageContent({ project }) {
           {hasTags && (
             <div>
               <SectionLabel text="// stack" />
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col gap-5">
                 {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-mono text-[11px] tracking-[2px] uppercase text-muted
-                      border border-line px-4 py-2 rounded-sm
-                      hover:border-accent/50 hover:text-white transition-colors duration-300"
-                  >
-                    {tag}
-                  </span>
+                  <SkillBar key={tag.name} name={tag.name} percentage={tag.percentage} />
                 ))}
               </div>
             </div>
@@ -280,7 +275,7 @@ export default function ProjectPageContent({ project }) {
           PROCESO
       ══════════════════════════════════════════ */}
       {process?.length > 0 && (
-        <section className="px-6 sm:px-12 lg:px-20 xl:px-28 py-20 lg:py-28 border-b border-line">
+        <section className="px-6 sm:px-12 lg:px-20 xl:px-28 py-12 lg:py-16 border-b border-line">
           <SectionLabel text={lang === 'en' ? '// process' : '// proceso'} />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {process.map((step) => (
@@ -308,7 +303,7 @@ export default function ProjectPageContent({ project }) {
           RESULTADOS
       ══════════════════════════════════════════ */}
       {results?.length > 0 && (
-        <section className="px-6 sm:px-12 lg:px-20 xl:px-28 py-20 lg:py-28 border-b border-line">
+        <section className="px-6 sm:px-12 lg:px-20 xl:px-28 py-12 lg:py-16 border-b border-line">
           <SectionLabel text={lang === 'en' ? '// results' : '// resultados'} />
           <div className="grid grid-cols-3 border border-line rounded overflow-hidden divide-x divide-line">
             {results.map((item) => (
@@ -332,29 +327,23 @@ export default function ProjectPageContent({ project }) {
           GALERÍA
       ══════════════════════════════════════════ */}
       {hasImage && (
-        <section className="px-6 sm:px-12 lg:px-20 xl:px-28 py-20 lg:py-28 border-b border-line">
+        <section className="px-6 sm:px-12 lg:px-20 xl:px-28 py-12 lg:py-16 border-b border-line">
           <SectionLabel text={lang === 'en' ? '// gallery' : '// galería'} />
-          <div className="grid grid-cols-1 gap-4">
-            {project.frontImage && (
-              <div className="border border-line rounded overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {gallery.map((src, i) => (
+              <div
+                key={src}
+                className={`border border-line rounded overflow-hidden${i === 0 ? ' sm:col-span-2' : ''}`}
+              >
                 <Image
-                  src={project.frontImage}
-                  alt={`${content.title} — preview`}
+                  src={src}
+                  alt={`${content.title} — ${i + 1}`}
                   width={1920}
                   height={1080}
                   className="w-full h-auto object-cover"
                 />
               </div>
-            )}
-            <div className="border border-line rounded overflow-hidden">
-              <Image
-                src={project.image}
-                alt={`${content.title} — ${lang === 'en' ? 'full view' : 'vista completa'}`}
-                width={1920}
-                height={3500}
-                className="w-full h-auto object-cover object-top"
-              />
-            </div>
+            ))}
           </div>
         </section>
       )}
@@ -366,7 +355,7 @@ export default function ProjectPageContent({ project }) {
         {prevProject ? (
           <Link
             href={`/projects/${prevProject.slug}`}
-            className="group px-6 sm:px-12 lg:px-20 xl:px-28 py-10 flex items-center gap-4
+            className="group px-6 sm:px-12 lg:px-20 xl:px-28 py-7 flex items-center gap-4
               hover:bg-surface transition-colors duration-300"
           >
             <FaArrowLeft size={12} className="text-muted flex-shrink-0
@@ -386,7 +375,7 @@ export default function ProjectPageContent({ project }) {
         {nextProject ? (
           <Link
             href={`/projects/${nextProject.slug}`}
-            className="group px-6 sm:px-12 lg:px-20 xl:px-28 py-10 flex items-center
+            className="group px-6 sm:px-12 lg:px-20 xl:px-28 py-7 flex items-center
               justify-end gap-4 text-right hover:bg-surface transition-colors duration-300"
           >
             <span>
