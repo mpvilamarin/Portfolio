@@ -8,6 +8,16 @@ import { getAllProjects } from '@/components/projectsContent';
 import FadeIn from '@/components/FadeIn';
 import SkillBar from '@/components/SkillBar';
 
+const GALLERY_SPANS = [
+  'col-span-2 row-span-2',
+  'col-span-1 row-span-1',
+  'col-span-1 row-span-1',
+  'col-span-2 row-span-2',
+  'col-span-1 row-span-1',
+  'col-span-1 row-span-1',
+  'col-span-2 row-span-2',
+];
+
 function SectionLabel({ text }) {
   return (
     <div className="flex items-center gap-4 mb-6 lg:mb-8">
@@ -28,6 +38,7 @@ export default function ProjectPageContent({ project }) {
       ? { title: project.en.title, subtitle: project.en.subtitle, description: project.en.description }
       : { title: project.title,    subtitle: project.subtitle,    description: project.description  };
 
+  const client  = lang === 'en' && project.en?.client  ? project.en.client  : project.client;
   const role    = lang === 'en' && project.en?.role    ? project.en.role    : project.role;
   const process = lang === 'en' && project.en?.process ? project.en.process : project.process;
   const results = lang === 'en' && project.en?.results ? project.en.results : project.results;
@@ -113,7 +124,6 @@ export default function ProjectPageContent({ project }) {
                 className="font-montserrat leading-[0.88] tracking-tight"
                 style={{ fontSize: 'clamp(2.8rem, 10vw, 8.5rem)' }}
               >
-                <span className="block font-thin text-white/70 uppercase">{project.client}</span>
                 <span className="block font-black text-white uppercase">{content.title}</span>
               </h1>
             </FadeIn>
@@ -182,7 +192,7 @@ export default function ProjectPageContent({ project }) {
               {lang === 'en' ? 'Client' : 'Cliente'}
             </p>
             <p className="font-montserrat font-semibold text-white text-sm">
-              {project.client}
+              {client}
             </p>
           </div>
 
@@ -327,23 +337,41 @@ export default function ProjectPageContent({ project }) {
           GALERÍA
       ══════════════════════════════════════════ */}
       {hasImage && (
-        <section className="px-6 sm:px-12 lg:px-20 xl:px-28 py-12 lg:py-16 border-b border-line">
-          <SectionLabel text={lang === 'en' ? '// gallery' : '// galería'} />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {gallery.map((src, i) => (
-              <div
-                key={src}
-                className={`border border-line rounded overflow-hidden${i === 0 ? ' sm:col-span-2' : ''}`}
-              >
-                <Image
-                  src={src}
-                  alt={`${content.title} — ${i + 1}`}
-                  width={1920}
-                  height={1080}
-                  className="w-full h-auto object-cover"
-                />
-              </div>
-            ))}
+        <section className="py-12 lg:py-16 border-b border-line">
+          <div className="px-6 sm:px-12 lg:px-20 xl:px-28">
+            <SectionLabel text={lang === 'en' ? '// gallery' : '// galería'} />
+            <div className="grid grid-cols-4 sm:grid-cols-6 auto-rows-[70px] sm:auto-rows-[90px]
+              [grid-auto-flow:dense] gap-2">
+              {gallery.map((src, i) => {
+                const span    = GALLERY_SPANS[i % GALLERY_SPANS.length];
+                const isVideo = /\.(mp4|webm|mov)$/i.test(src);
+                return (
+                  <div
+                    key={src}
+                    className={`relative overflow-hidden rounded border border-line bg-base ${span}`}
+                  >
+                    {isVideo ? (
+                      <video
+                        src={src}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={src}
+                        alt={`${content.title} — ${i + 1}`}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </section>
       )}
