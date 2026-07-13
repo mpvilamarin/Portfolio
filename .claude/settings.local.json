@@ -5,7 +5,8 @@
       "Bash(npm run *)",
       "Bash(node_modules/.bin/next build *)",
       "Bash(curl -s http://localhost:3000/projects/rediseno-web-resistance)",
-      "Bash(curl -s http://localhost:3000/projects/rediseno-web-resistance -o /dev/null -w \"%{http_code}\")"
+      "Bash(curl -s http://localhost:3000/projects/rediseno-web-resistance -o /dev/null -w \"%{http_code}\")",
+      "WebFetch(domain:vulnmaster.us)"
     ]
   }
 }

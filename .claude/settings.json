@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:3000/projects/tipografia-ii-vignelli -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s http://localhost:3000/projects/tipografia-ii-revista-vignelli -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s http://localhost:3000/projects/tipografia-ii-totem-nobel -o /dev/null -w \"%{http_code}\\\\n\")"
+    ]
+  }
+}
