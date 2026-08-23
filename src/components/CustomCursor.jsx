@@ -20,8 +20,8 @@ const CustomCursor = () => {
   // Anillo — con spring lag
   const rx = useMotionValue(-200);
   const ry = useMotionValue(-200);
-  const ringX = useSpring(rx, { damping: 30, stiffness: 200 });
-  const ringY = useSpring(ry, { damping: 30, stiffness: 200 });
+  const ringX = useSpring(rx, { damping: 40, stiffness: 700, mass: 0.4 });
+  const ringY = useSpring(ry, { damping: 40, stiffness: 700, mass: 0.4 });
 
   useEffect(() => {
     setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
