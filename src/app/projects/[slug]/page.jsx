@@ -1,12 +1,12 @@
-import { notFound } from 'next/navigation';
-import { getAllProjects, getProjectBySlug } from '@/components/projectsContent';
-import ProjectPageContent from '@/components/ProjectPageContent';
+import { notFound } from "next/navigation";
+import { getAllProjects, getProjectBySlug } from "@/components/projectsContent";
+import ProjectPageContent from "@/components/ProjectPageContent";
 
 /* ── Metadatos dinámicos ─────────────────────────── */
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const project = getProjectBySlug(slug);
-  if (!project) return { title: 'Proyecto no encontrado' };
+  if (!project) return { title: "Proyecto no encontrado" };
 
   return {
     title: `${project.title} · Paula Villamarín`,
@@ -14,18 +14,18 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: project.title,
       description: project.description,
-      images: [{ url: project.image ?? '/project.jpg', alt: project.title }],
+      images: [{ url: project.image ?? "/project.jpg", alt: project.title }],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: project.title,
       description: project.description,
-      images: [project.image ?? '/project.jpg'],
+      images: [project.image ?? "/project.jpg"],
     },
   };
 }
 
-/* ── Rutas estáticas ────────────────────────────── */
+/* ── Rutas estáticas ─────────────────────────── */
 export async function generateStaticParams() {
   const seen = new Set();
   return getAllProjects()
