@@ -2,36 +2,133 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import { projects } from './projectsContent';
 import FadeIn from './FadeIn';
 import { useLanguage } from '@/context/LanguageContext';
 import { tr } from '@/lib/translations';
 
+const FEATURED_SPANS = [
+  'col-span-2 row-span-2',
+  'col-span-2 row-span-1',
+  'col-span-1 row-span-1',
+  'col-span-1 row-span-1',
+];
+
+function SubLabel({ text }) {
+  return (
+    <div className="flex items-center gap-4 mb-6 lg:mb-8">
+      <span className="font-mono text-[10px] text-muted tracking-[4px] uppercase whitespace-nowrap">
+        {text}
+      </span>
+      <div className="flex-1 h-px bg-line" />
+    </div>
+  );
+}
+
+function Placeholder({ letter }) {
+  return (
+    <div
+      className="absolute inset-0 flex items-center justify-center"
+      style={{ backgroundColor: '#1F1015' }}
+    >
+      <div
+        className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage:
+            'linear-gradient(#F43F5E 1px, transparent 1px), linear-gradient(90deg, #F43F5E 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+        }}
+      />
+      <span
+        className="font-montserrat font-black text-accent/20 select-none"
+        style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)' }}
+      >
+        {letter}
+      </span>
+    </div>
+  );
+}
+
 export default function ProjectsContainer() {
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [visibleCount, setVisibleCount] = useState(6);
-  const INITIAL = 6;
+  const [hoverIndex, setHoverIndex] = useState(0);
   const { lang } = useLanguage();
   const tx = tr[lang].projects;
   const categories = tx.categories;
+
+  const featured = projects.filter((p) => p.frontImage).slice(0, 4);
 
   const filtered = selectedCategory === 'All'
     ? projects
     : projects.filter((p) => p.category === selectedCategory);
 
-
-  const displayed = filtered.slice(0, visibleCount);
+  const active = filtered[hoverIndex] ?? filtered[0];
 
   return (
     <div className="w-full">
-      {/* ── Filtros ──────────────────────────────────── */}
-      <FadeIn delay={0.15}>
+
+      {/* ── Destacados: mosaico ──────────────────────── */}
+      <FadeIn>
+        <SubLabel text={lang === 'en' ? '// featured' : '// destacados'} />
+      </FadeIn>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 auto-rows-[130px] sm:auto-rows-[170px]
+        gap-2 mb-16 lg:mb-20">
+        {featured.map((project, i) => {
+          const title = lang === 'en' && project.en ? project.en.title : project.title;
+          const span  = FEATURED_SPANS[i % FEATURED_SPANS.length];
+          return (
+            <FadeIn key={project.slug} delay={Math.min(0.06 * i, 0.2)} className={`${span} h-full`}>
+              <Link
+                href={`/projects/${project.slug}`}
+                className="group relative block w-full h-full overflow-hidden rounded-lg
+                  border border-line hover:border-accent/30 transition-colors duration-300"
+                style={{ backgroundColor: '#150B0D' }}
+              >
+                <Image
+                  src={project.frontImage}
+                  alt={title}
+                  fill
+                  sizes="(min-width: 640px) 25vw, 50vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                />
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{ background: 'linear-gradient(180deg, transparent 45%, rgba(13,7,9,0.85) 100%)' }}
+                />
+                <div className="absolute left-0 right-0 bottom-0 p-3 sm:p-4">
+                  <span
+                    className="font-mono text-[8px] sm:text-[9px] tracking-[3px] uppercase"
+                    style={{ color: '#F43F5E' }}
+                  >
+                    {project.category}
+                  </span>
+                  <h3
+                    className="font-montserrat font-bold uppercase leading-tight mt-1
+                      text-sm sm:text-base"
+                    style={{ color: '#FFFFFF' }}
+                  >
+                    {title}
+                  </h3>
+                </div>
+              </Link>
+            </FadeIn>
+          );
+        })}
+      </div>
+
+      {/* ── Índice completo ───────────────────────────── */}
+      <FadeIn>
+        <SubLabel text={lang === 'en' ? '// index' : '// índice'} />
+      </FadeIn>
+
+      {/* Filtros */}
+      <FadeIn delay={0.1}>
         <div className="flex flex-wrap gap-2 mb-8 lg:mb-10">
           {categories.map(({ value, label }) => (
             <button
               key={value}
-              onClick={() => { setSelectedCategory(value); setVisibleCount(INITIAL); }}
+              onClick={() => { setSelectedCategory(value); setHoverIndex(0); }}
               className={`font-mono text-[10px] tracking-[3px] uppercase px-4 py-2 rounded
                 transition-all duration-300
                 ${selectedCategory === value
@@ -45,148 +142,97 @@ export default function ProjectsContainer() {
         </div>
       </FadeIn>
 
-      {/* ── Grid ─────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-line border border-line">
-        {displayed.map((project, index) => (
-          <ProjectCard
-            key={`${project.slug}-${index}`}
-            project={project}
-            index={index}
-            viewLabel={tx.viewProject}
-          />
-        ))}
-      </div>
+      {/* Lista + preview */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 lg:gap-10 items-start">
 
-      {/* ── Ver más / Ver menos ──────────────────────── */}
-      {(filtered.length > visibleCount || visibleCount > INITIAL) && (
-        <div className="flex justify-center gap-4 mt-10">
-          {filtered.length > visibleCount && (
-            <button
-              onClick={() => setVisibleCount((prev) => prev + 3)}
-              className="font-mono text-[10px] tracking-[3px] uppercase
-                bg-accent text-base px-7 py-3 rounded hover:bg-accent-light transition-colors duration-300"
-            >
-              {tx.loadMore}
-            </button>
-          )}
-          {visibleCount > INITIAL && (
-            <button
-              onClick={() => setVisibleCount((prev) => Math.max(prev - 3, INITIAL))}
-              className="font-mono text-[10px] tracking-[3px] uppercase
-                border border-line text-muted px-7 py-3 rounded
-                hover:border-muted hover:text-white transition-colors duration-300"
-            >
-              {tx.showLess}
-            </button>
+        <div className="flex flex-col border-t border-line">
+          {filtered.map((project, i) => {
+            const title    = lang === 'en' && project.en ? project.en.title : project.title;
+            const isActive = i === hoverIndex;
+            return (
+              <FadeIn key={project.slug} delay={Math.min(0.04 * i, 0.24)}>
+                <Link
+                  href={`/projects/${project.slug}`}
+                  onMouseEnter={() => setHoverIndex(i)}
+                  className="group grid grid-cols-[28px_1fr_24px]
+                    sm:grid-cols-[40px_1fr_130px_110px_24px]
+                    items-center gap-2 sm:gap-4 py-3 sm:py-3.5 border-b border-line
+                    transition-colors duration-300"
+                >
+                  <span className={`font-mono text-[10px] tracking-widest transition-colors duration-300
+                    ${isActive ? 'text-accent' : 'text-muted'}`}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className={`font-montserrat font-bold uppercase leading-tight truncate
+                    text-[1rem] sm:text-xl transition-colors duration-300
+                    ${isActive ? 'text-accent' : 'text-white'}`}>
+                    {title}
+                  </span>
+                  <span className="hidden sm:block font-mono text-xs text-muted truncate pr-2">
+                    {project.client}
+                  </span>
+                  <span className="hidden sm:block font-mono text-[10px] text-muted
+                    tracking-widest uppercase text-right pr-2">
+                    {project.category}
+                  </span>
+                  <span className={`text-right text-accent transition-all duration-300
+                    ${isActive ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-1'}`}>
+                    →
+                  </span>
+                </Link>
+              </FadeIn>
+            );
+          })}
+
+          {filtered.length === 0 && (
+            <p className="font-mono text-xs text-muted py-10">
+              {lang === 'en' ? 'No projects in this category yet.' : 'Aún no hay proyectos en esta categoría.'}
+            </p>
           )}
         </div>
-      )}
-    </div>
-  );
-}
 
-/* ── Tarjeta individual ─────────────────────────────── */
-function ProjectCard({ project, index, viewLabel }) {
-  const [hovered, setHovered] = useState(false);
-  const hasImage = !!project.frontImage;
-
-  return (
-    <FadeIn delay={Math.min(0.06 * (index % 6), 0.3)}>
-      <Link href={`/projects/${project.slug}`}>
-        <div
-          className="relative overflow-hidden bg-surface group"
-          style={{ aspectRatio: '4 / 3' }}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-        >
-          {/* Imagen o placeholder */}
-          {hasImage ? (
-            <Image
-              src={project.frontImage}
-              alt={project.title}
-              fill
-              className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center bg-elevated">
-              {/* Grid decorativa */}
+        {/* Preview sticky */}
+        {active && (
+          <div
+            className="hidden lg:block sticky top-28 rounded-lg overflow-hidden
+              border border-line aspect-[4/5]"
+            style={{ backgroundColor: '#150B0D' }}
+          >
+            <div className="relative w-full h-full">
+              {active.frontImage ? (
+                <Image
+                  key={active.slug}
+                  src={active.frontImage}
+                  alt={active.title}
+                  fill
+                  sizes="320px"
+                  className="object-cover"
+                />
+              ) : (
+                <Placeholder letter={active.client?.[0] ?? 'P'} />
+              )}
               <div
-                className="absolute inset-0 opacity-10"
-                style={{
-                  backgroundImage:
-                    'linear-gradient(#F43F5E 1px, transparent 1px), linear-gradient(90deg, #F43F5E 1px, transparent 1px)',
-                  backgroundSize: '40px 40px',
-                }}
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: 'linear-gradient(180deg, transparent 50%, rgba(13,7,9,0.92) 100%)' }}
               />
-              <span
-                className="font-montserrat font-black text-accent/20 select-none"
-                style={{ fontSize: 'clamp(4rem, 10vw, 7rem)' }}
-              >
-                {project.client?.[0] ?? 'P'}
-              </span>
-            </div>
-          )}
-
-          {/* Overlay en hover */}
-          <AnimatePresence>
-            {hovered && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                className="absolute inset-0 bg-base/88 backdrop-blur-[2px]"
-              />
-            )}
-          </AnimatePresence>
-
-          {/* Contenido del overlay */}
-          <AnimatePresence>
-            {hovered && (
-              <motion.div
-                initial={{ y: 14, opacity: 0 }}
-                animate={{ y: 0,  opacity: 1 }}
-                exit={{ y: 14,  opacity: 0 }}
-                transition={{ duration: 0.28, ease: 'easeOut' }}
-                className="absolute inset-0 flex flex-col justify-end p-4 lg:p-6"
-              >
-                <span className="font-mono text-[9px] text-accent tracking-[4px] uppercase mb-1.5">
-                  {project.category}
+              <div className="absolute left-0 right-0 bottom-0 p-5">
+                <span className="font-mono text-[9px] tracking-[3px] uppercase" style={{ color: '#F43F5E' }}>
+                  {lang === 'en' ? 'Preview' : 'Vista previa'}
                 </span>
-                <h3 className="font-montserrat font-black text-white text-sm lg:text-base leading-tight mb-1">
-                  {project.title}
-                </h3>
-                <p className="font-mono text-[10px] text-muted italic mb-3">
-                  {project.client}
+                <h4
+                  className="font-montserrat font-black uppercase leading-tight mt-2 text-xl"
+                  style={{ color: '#FFFFFF' }}
+                >
+                  {lang === 'en' && active.en ? active.en.title : active.title}
+                </h4>
+                <p className="font-mono text-[11px] mt-1" style={{ color: '#9D8B8E' }}>
+                  {active.client} · {active.year}
                 </p>
-                <div className="flex items-center gap-1.5">
-                  <span className="font-mono text-[10px] text-accent tracking-widest">{viewLabel}</span>
-                  <span className="text-accent text-xs">→</span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Badge de categoría (siempre visible) */}
-          <AnimatePresence>
-            {!hovered && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute bottom-0 left-0 right-0 bg-base/70 px-3 py-2 flex justify-between items-center"
-              >
-                <span className="font-montserrat font-bold text-xs text-white truncate">
-                  {project.title}
-                </span>
-                <span className="font-mono text-[9px] text-muted italic shrink-0 ml-2">
-                  {project.category}
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </Link>
-    </FadeIn>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

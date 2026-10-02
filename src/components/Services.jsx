@@ -54,7 +54,7 @@ export const Services = () => {
                 </div>
 
                 {/* Título */}
-                <h3 className="font-montserrat font-bold text-white text-sm lg:text-base mb-3 tracking-wide">
+                <h3 className="font-montserrat font-bold text-white text-sm lg:text-[1rem] mb-3 tracking-wide">
                   {title}
                 </h3>
 

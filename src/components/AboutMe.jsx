@@ -70,7 +70,7 @@ const AboutMe = () => {
               <p className="font-mono text-[10px] text-accent tracking-[5px] uppercase mb-6">
                 {tx.design}
               </p>
-              <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-5">
                 {designSkills.map((skill) => (
                   <SkillBar key={skill.name} name={skill.name} percentage={skill.percentage} />
                 ))}
@@ -87,7 +87,7 @@ const AboutMe = () => {
               <p className="font-mono text-[10px] text-accent tracking-[5px] uppercase mb-6">
                 {tx.frontend}
               </p>
-              <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-5">
                 {techSkills.map((skill) => (
                   <SkillBar key={skill.name} name={skill.name} percentage={skill.percentage} />
                 ))}

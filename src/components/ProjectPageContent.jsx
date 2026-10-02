@@ -721,7 +721,7 @@ export default function ProjectPageContent({ project }) {
               <span className="block font-mono text-[9px] text-line tracking-[3px] uppercase mb-1">
                 {lang === 'en' ? 'Previous' : 'Anterior'}
               </span>
-              <span className="font-montserrat font-semibold text-white text-sm sm:text-base
+              <span className="font-montserrat font-semibold text-white text-sm sm:text-[1rem]
                 group-hover:text-accent transition-colors duration-300">
                 {prevTitle}
               </span>
@@ -739,7 +739,7 @@ export default function ProjectPageContent({ project }) {
               <span className="block font-mono text-[9px] text-line tracking-[3px] uppercase mb-1">
                 {lang === 'en' ? 'Next' : 'Siguiente'}
               </span>
-              <span className="font-montserrat font-semibold text-white text-sm sm:text-base
+              <span className="font-montserrat font-semibold text-white text-sm sm:text-[1rem]
                 group-hover:text-accent transition-colors duration-300">
                 {nextTitle}
               </span>
