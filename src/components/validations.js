@@ -21,9 +21,9 @@ export function validateName(name) {
   }
   
   export function validatePhone(phone) {
-    // Solo números y al menos 6 dígitos
+    // Solo números y al menos 6 dígitos (se ignoran espacios, guiones, paréntesis y +)
     const regex = /^\d{6,}$/;
-    if (!regex.test(phone)) {
+    if (!regex.test(phone.replace(/[\s\-()+]/g, ''))) {
       return "El número telefónico debe contener solo números y tener al menos 6 dígitos.";
     }
     return "";

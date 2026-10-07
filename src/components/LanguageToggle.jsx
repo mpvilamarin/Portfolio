@@ -14,7 +14,7 @@ const LanguageToggle = () => {
 
   useEffect(() => { setMounted(true); }, []);
 
-  if (!mounted) return <div style={{ width: 38, height: 22 }} />;
+  if (!mounted) return <div style={{ width: 44, height: 28 }} />;
 
   const isEN = lang === 'en';
 
@@ -23,7 +23,7 @@ const LanguageToggle = () => {
       onClick={toggle}
       aria-label={isEN ? 'Cambiar a español' : 'Switch to English'}
       className="relative flex items-center justify-center select-none overflow-hidden rounded"
-      style={{ width: 38, height: 22 }}
+      style={{ width: 44, height: 28 }}
     >
       {/* Marco exterior */}
       <motion.span
@@ -48,7 +48,7 @@ const LanguageToggle = () => {
           animate={{ rotateX: 0,   opacity: 1, y: 0 }}
           exit={{    rotateX:  70, opacity: 0, y: -4 }}
           transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="relative z-10 font-mono text-[9px] tracking-[2px]"
+          className="relative z-10 font-mono text-xs tracking-[1px]"
           style={{
             color: isEN ? '#F43F5E' : 'rgba(157,139,142,0.9)',
             display: 'block',

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import { getAllProjects, getProjectBySlug } from "@/components/projectsContent";
+import { getAllProjects, getProjectBySlug, loc, coverSrc } from "@/components/projectsContent";
 import ProjectPageContent from "@/components/ProjectPageContent";
+import { withImageSizes } from "@/lib/imageMeta";
 
 /* ── Metadatos dinámicos ─────────────────────────── */
 export async function generateMetadata({ params }) {
@@ -8,19 +9,27 @@ export async function generateMetadata({ params }) {
   const project = getProjectBySlug(slug);
   if (!project) return { title: "Proyecto no encontrado" };
 
+  const title = loc(project.title, "es");
+  const description = loc(project.description, "es");
+  const image = coverSrc(project);
+  const images = image ? [{ url: encodeURI(image), alt: title }] : undefined;
+
   return {
-    title: `${project.title} · Paula Villamarín`,
-    description: project.description,
+    title,
+    description,
+    alternates: { canonical: `/projects/${project.slug}` },
     openGraph: {
-      title: project.title,
-      description: project.description,
-      images: [{ url: project.image ?? "/project.jpg", alt: project.title }],
+      type: "article",
+      url: `/projects/${project.slug}`,
+      title,
+      description,
+      ...(images && { images }),
     },
     twitter: {
       card: "summary_large_image",
-      title: project.title,
-      description: project.description,
-      images: [project.image ?? "/project.jpg"],
+      title,
+      description,
+      ...(images && { images: images.map((i) => i.url) }),
     },
   };
 }
@@ -43,6 +52,7 @@ export default async function ProjectPage({ params }) {
   const project = getProjectBySlug(slug);
   if (!project) notFound();
 
-  // Pasamos el proyecto como prop al client component que maneja el idioma
-  return <ProjectPageContent project={project} />;
+  // Pasamos el proyecto como prop al client component que maneja el idioma,
+  // con las dimensiones reales de las imágenes de sus bloques (leídas en el servidor).
+  return <ProjectPageContent project={withImageSizes(project)} />;
 }

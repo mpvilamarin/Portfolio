@@ -32,8 +32,19 @@ export default {
       animation: {
         'fade-in': 'fadeIn 0.6s ease forwards',
         'pulse-slow': 'pulse 3s ease-in-out infinite',
+        'page-enter': 'pageEnter 0.25s ease-out both',
+        'card-enter': 'cardEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both',
       },
       keyframes: {
+        cardEnter: {
+          // `translate` (no `transform`) para no pisar el desplazamiento de la tarjeta
+          from: { opacity: '0', translate: '0 12px' },
+          to:   { opacity: '1', translate: '0 0' },
+        },
+        pageEnter: {
+          from: { opacity: '0' },
+          to:   { opacity: '1' },
+        },
         fadeIn: {
           from: { opacity: '0', transform: 'translateY(12px)' },
           to:   { opacity: '1', transform: 'translateY(0)' },

@@ -14,7 +14,7 @@ export const Projects = () => {
       {/* Header de sección */}
       <FadeIn>
         <div className="flex items-center gap-5 mb-3">
-          <span className="font-mono text-[10px] text-accent tracking-[4px]">{tx.sectionNum}</span>
+          <span className="font-mono text-xs text-accent tracking-[2px]">{tx.sectionNum}</span>
           <h2 className="font-montserrat text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
             {tx.heading}
           </h2>
@@ -23,7 +23,7 @@ export const Projects = () => {
       </FadeIn>
 
       <FadeIn delay={0.1}>
-        <p className="font-mono text-xs sm:text-sm text-muted mb-10 lg:mb-14 max-w-xl leading-relaxed">
+        <p className="font-montserrat text-[1rem]/6 sm:text-lg text-muted mb-10 lg:mb-12 max-w-2xl leading-relaxed">
           {tx.desc}
         </p>
       </FadeIn>

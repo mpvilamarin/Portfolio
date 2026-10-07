@@ -13,11 +13,12 @@
 }
 
 /* ── Cursor ─────────────────────────────────── */
-* {
-  cursor: none;
-}
-a, button, [data-hover] {
-  cursor: none;
+/* El cursor personalizado solo reemplaza al nativo con mouse;
+   en pantallas táctiles se mantiene el comportamiento normal. */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    cursor: none;
+  }
 }
 
 /* ── Base ────────────────────────────────────── */
@@ -104,6 +105,7 @@ html.light .text-primary\/70 { color: rgba(42,8,18,0.45)       !important; }
 html.light .text-muted      { color: var(--cl-muted)            !important; }
 html.light .text-accent     { color: var(--cl-accent)           !important; }
 html.light .text-line       { color: #DDA0B4                    !important; }
+html.light .placeholder-muted\/70::placeholder { color: rgba(138,74,92,0.8) !important; }
 
 /* ── Bordes y líneas ── */
 html.light .border-line             { border-color: var(--cl-line)   !important; }
@@ -172,3 +174,20 @@ html.light ::selection {
   background-color: var(--cl-accent);
   color: #FEF0F5;
 }
+
+/* ── Movimiento reducido ─────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-page-enter,
+  .animate-card-enter { animation: none; }
+}
+
+/* ── Número decorativo del hero de proyecto ─── */
+.hero-number { color: rgba(255, 241, 242, 0.045); }
+html.light .hero-number { color: rgba(42, 8, 18, 0.06); }
+
+/* Número del hero en contorno de acento */
+.hero-number-outline {
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(244, 63, 94, 0.28);
+}
+html.light .hero-number-outline { -webkit-text-stroke-color: rgba(184, 16, 51, 0.25); }

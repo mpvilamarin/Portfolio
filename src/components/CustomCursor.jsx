@@ -6,8 +6,11 @@ import { motion, useMotionValue, useSpring } from 'framer-motion';
  * Cursor personalizado — punto + anillo.
  * El punto sigue el mouse exactamente.
  * El anillo sigue con un pequeño lag (spring).
- * Al hacer hover en links/buttons el anillo crece.
+ * Al hacer hover en elementos clickeables el anillo crece y se rellena.
+ * Solo se muestra con mouse (no en dispositivos táctiles).
  */
+const CLICKABLE = 'a, button, label, input, textarea, select, [role="button"], [data-hover]';
+
 const CustomCursor = () => {
   const [isHovering,    setIsHovering]    = useState(false);
   const [isVisible,     setIsVisible]     = useState(false);
@@ -24,7 +27,10 @@ const CustomCursor = () => {
   const ringY = useSpring(ry, { damping: 40, stiffness: 700, mass: 0.4 });
 
   useEffect(() => {
-    setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
+    // Igual que en globals.css: solo con mouse se oculta el cursor nativo
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    setIsTouchDevice(!finePointer);
+    if (!finePointer) return undefined;
 
     const onMove = (e) => {
       dotX.set(e.clientX);
@@ -33,8 +39,8 @@ const CustomCursor = () => {
       ry.set(e.clientY);
       setIsVisible(true);
     };
-    const onOver  = (e) => { if (e.target.closest('a, button, [data-hover]')) setIsHovering(true); };
-    const onOut   = (e) => { if (e.target.closest('a, button, [data-hover]')) setIsHovering(false); };
+    const onOver  = (e) => { if (e.target.closest(CLICKABLE)) setIsHovering(true); };
+    const onOut   = (e) => { if (e.target.closest(CLICKABLE)) setIsHovering(false); };
     const onLeave = ()  => setIsVisible(false);
     const onEnter = ()  => setIsVisible(true);
 
@@ -82,9 +88,10 @@ const CustomCursor = () => {
           border: '1px solid #F43F5E',
         }}
         animate={{
-          width:   isHovering ? 38 : 22,
-          height:  isHovering ? 38 : 22,
-          opacity: isHovering ? 0.6 : 0.45,
+          width:   isHovering ? 44 : 22,
+          height:  isHovering ? 44 : 22,
+          opacity: isHovering ? 1 : 0.5,
+          backgroundColor: isHovering ? 'rgba(244,63,94,0.15)' : 'rgba(244,63,94,0)',
         }}
         initial={{ width: 22, height: 22, opacity: 0 }}
         transition={{ duration: 0.2, ease: 'easeOut' }}

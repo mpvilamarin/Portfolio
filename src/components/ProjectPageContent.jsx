@@ -1,103 +1,42 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaArrowLeft, FaArrowRight, FaExternalLinkAlt, FaExpand, FaTimes } from 'react-icons/fa';
+import {
+  FaArrowLeft, FaArrowRight, FaChevronLeft, FaChevronRight, FaTimes,
+} from 'react-icons/fa';
 import { useLanguage } from '@/context/LanguageContext';
 import { tr } from '@/lib/translations';
-import { getAllProjects } from '@/components/projectsContent';
-import FadeIn from '@/components/FadeIn';
-import SkillBar from '@/components/SkillBar';
+import { getAllProjects, loc, toMedia, blockImages, heroMedia, heroCard } from '@/components/projectsContent';
+import ProjectHero from '@/components/project/ProjectHero';
+import {
+  ProjectBlock, SectionLabel, BLOCK_GROUPS, ALTERNATING, COUNTER_KEY,
+} from '@/components/project/blocks';
+import { trackEvent } from '@/lib/analytics';
 
-const GALLERY_SPANS = [
-  'col-span-2 row-span-2',
-  'col-span-1 row-span-1',
-  'col-span-1 row-span-1',
-  'col-span-2 row-span-2',
-  'col-span-1 row-span-1',
-  'col-span-1 row-span-1',
-  'col-span-2 row-span-2',
-];
+const isVideo = (src) => /\.(mp4|webm|mov)$/i.test(src);
+const PANEL_KEY = 'pv_project_panel_collapsed';
 
-function SectionLabel({ text }) {
-  return (
-    <div className="flex items-center gap-4 mb-6 lg:mb-8">
-      <span className="font-mono text-[10px] text-muted tracking-[4px] uppercase whitespace-nowrap">
-        {text}
-      </span>
-      <div className="flex-1 h-px bg-line" />
-    </div>
-  );
-}
-
-function MediaTile({ src, alt = '', onClick }) {
-  const isVideo = /\.(mp4|webm|mov)$/i.test(src);
-  const media = isVideo ? (
-    <video
-      src={src}
-      autoPlay
-      loop
-      muted
-      playsInline
-      className="absolute inset-0 w-full h-full object-cover transition-transform
-        duration-500 group-hover:scale-[1.06]"
-    />
-  ) : (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
-      className="absolute inset-0 w-full h-full object-cover transition-transform
-        duration-500 group-hover:scale-[1.06]"
-    />
-  );
-
-  if (!onClick) return media;
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={alt}
-      className="group absolute inset-0 w-full h-full overflow-hidden text-left"
-    >
-      {media}
-      <div className="absolute inset-0 bg-base/0 group-hover:bg-base/40
-        transition-colors duration-300" />
-      <span className="absolute inset-0 flex items-center justify-center opacity-0
-        group-hover:opacity-100 transition-opacity duration-300">
-        <span className="flex items-center justify-center w-10 h-10 rounded-full
-          border border-white/40 bg-base/60 backdrop-blur-sm text-white">
-          <FaExpand size={13} />
-        </span>
-      </span>
-    </button>
-  );
-}
-
-function Lightbox({ items, index, onClose, onPrev, onNext, title }) {
-  const src = items[index];
-  if (!src) return null;
-  const isVideo = /\.(mp4|webm|mov)$/i.test(src);
+function Lightbox({ items, index, onClose, onPrev, onNext, labels }) {
+  const item = items[index];
+  if (!item) return null;
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center
-        bg-base/95 backdrop-blur-md"
+      transition={{ duration: 0.2 }}
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-base/95 backdrop-blur-md"
       onClick={onClose}
     >
       <button
         type="button"
         onClick={onClose}
-        aria-label="Cerrar"
-        className="absolute top-6 right-6 sm:top-8 sm:right-8 z-10 text-white/70
-          hover:text-white transition-colors duration-300"
+        aria-label={labels.close}
+        className="absolute top-6 right-6 sm:top-8 sm:right-8 z-10 p-2 text-white/70 hover:text-white transition-colors duration-300"
       >
         <FaTimes size={22} />
       </button>
@@ -107,18 +46,16 @@ function Lightbox({ items, index, onClose, onPrev, onNext, title }) {
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onPrev(); }}
-            aria-label="Anterior"
-            className="absolute left-2 sm:left-8 top-1/2 -translate-y-1/2 z-10 p-3
-              text-white/70 hover:text-accent transition-colors duration-300"
+            aria-label={labels.prevImage}
+            className="absolute left-2 sm:left-8 top-1/2 -translate-y-1/2 z-10 p-3 text-white/70 hover:text-accent transition-colors duration-300"
           >
             <FaArrowLeft size={20} />
           </button>
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onNext(); }}
-            aria-label="Siguiente"
-            className="absolute right-2 sm:right-8 top-1/2 -translate-y-1/2 z-10 p-3
-              text-white/70 hover:text-accent transition-colors duration-300"
+            aria-label={labels.nextImage}
+            className="absolute right-2 sm:right-8 top-1/2 -translate-y-1/2 z-10 p-3 text-white/70 hover:text-accent transition-colors duration-300"
           >
             <FaArrowRight size={20} />
           </button>
@@ -131,36 +68,25 @@ function Lightbox({ items, index, onClose, onPrev, onNext, title }) {
       >
         <AnimatePresence mode="wait">
           <motion.div
-            key={src}
+            key={item.src}
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.2 }}
             className="max-w-full max-h-full flex items-center justify-center"
           >
-            {isVideo ? (
-              <video
-                src={src}
-                controls
-                autoPlay
-                loop
-                className="max-w-full max-h-[85vh] rounded"
-              />
+            {isVideo(item.src) ? (
+              <video src={item.src} controls autoPlay loop className="max-w-full max-h-[85vh] rounded" />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={src}
-                alt={title ?? ''}
-                className="max-w-full max-h-[85vh] object-contain rounded"
-              />
+              <img src={item.src} alt={item.alt} className="max-w-full max-h-[85vh] object-contain rounded" />
             )}
           </motion.div>
         </AnimatePresence>
       </div>
 
       {items.length > 1 && (
-        <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2
-          font-mono text-[11px] tracking-[3px] text-white/60">
+        <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 font-mono text-sm tracking-[2px] text-white/70">
           {String(index + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
         </div>
       )}
@@ -176,35 +102,54 @@ const SITE_LABELS = [
 ];
 
 function getSiteLabel(url) {
-  const clean = url.replace(/^https?:\/\//, '');
+  const clean = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
   const known = SITE_LABELS.find(([re]) => re.test(clean));
   return known ? known[1] : clean;
-}
-
-function FactRow({ label, children }) {
-  return (
-    <div className="py-4 first:pt-0 last:pb-0">
-      <p className="font-mono text-[10px] text-muted tracking-[3px] uppercase mb-1.5">
-        {label}
-      </p>
-      <div className="font-montserrat font-semibold text-white text-sm">{children}</div>
-    </div>
-  );
 }
 
 export default function ProjectPageContent({ project }) {
   const { lang } = useLanguage();
   const tx = tr[lang].projectPage;
 
-  const content =
-    lang === 'en' && project.en
-      ? { title: project.en.title, subtitle: project.en.subtitle, description: project.en.description }
-      : { title: project.title,    subtitle: project.subtitle,    description: project.description  };
+  const title    = loc(project.title, lang);
+  const tagline  = loc(project.tagline, lang);
+  const meta     = project.meta ?? {};
+  const client   = loc(meta.client, lang);
+  const role     = loc(meta.role, lang);
+  const stack    = (meta.stack ?? []).map((tag) => loc(tag, lang));
+  const categoryLabel = tr[lang].categoryLabels[project.category] ?? project.category;
 
-  const client  = lang === 'en' && project.en?.client  ? project.en.client  : project.client;
-  const role    = lang === 'en' && project.en?.role    ? project.en.role    : project.role;
-  const process = lang === 'en' && project.en?.process ? project.en.process : project.process;
-  const results = lang === 'en' && project.en?.results ? project.en.results : project.results;
+  const link = project.link?.href
+    ? { href: project.link.href, label: loc(project.link.label, lang) ?? tx.viewSite }
+    : null;
+  const siteUrl   = link?.href ?? null;
+  const siteLabel = siteUrl ? getSiteLabel(siteUrl) : null;
+
+  // "UX/UI · FRONTEND · 2025": el rol separado por "+" y el año
+  // roleShort (opcional) es una versión corta del rol para esta línea; la franja muestra el completo
+  const roleShort = loc(meta.roleShort, lang) ?? role;
+  const metaLine = [...(roleShort ? roleShort.split('+').map((r) => r.trim()) : []), meta.year]
+    .filter(Boolean)
+    .join(' · ');
+
+  // Franja de datos del hero (solo los que existen).
+  // Los trabajos académicos muestran cátedra, materia y tipo en vez de cliente y rol.
+  const subject  = loc(meta.subject, lang);
+  const academic = Boolean(meta.chair || subject);
+  const facts = (academic
+    ? [
+        meta.chair && { label: tx.chair,   value: meta.chair },
+        subject    && { label: tx.subject, value: subject },
+        meta.year  && { label: tx.year,    value: meta.year },
+        role       && { label: tx.type,    value: role },
+      ]
+    : [
+        client    && { label: tx.client, value: client },
+        meta.year && { label: tx.year,   value: meta.year },
+        role      && { label: tx.role,   value: role },
+      ]
+  ).concat(siteUrl ? [{ label: tx.viewSite, value: siteLabel, href: siteUrl }] : [])
+    .filter(Boolean);
 
   const allProjects = getAllProjects();
   const idx         = allProjects.findIndex((p) => p.slug === project.slug);
@@ -212,71 +157,135 @@ export default function ProjectPageContent({ project }) {
   const nextProject = idx < allProjects.length - 1 ? allProjects[idx + 1] : null;
   const projectNum  = String(idx + 1).padStart(2, '0');
 
-  const hasUrl   = project.url && project.url.trim() !== '';
-  const siteUrl  = hasUrl
-    ? project.url.startsWith('http') ? project.url : `https://${project.url}`
-    : null;
-  const siteLabel = hasUrl ? getSiteLabel(project.url) : null;
-  const gallery   = project.gallery?.filter(Boolean) ?? [];
-  const hasTags   = project.tags?.length > 0;
-  const heroImage = project.image || project.frontImage || gallery[0] || null;
+  /* Bloques: id, grupo del índice, número dentro de su tipo (Decisión 02…) y
+     posición en la alternancia texto/imagen (la primera con la imagen a la derecha) */
+  const blocks = useMemo(() => {
+    let group = null;
+    let run = -1;      // tramo del índice: bloques seguidos del mismo grupo
+    let alt = 0;
+    const counts = {};
+    return (project.blocks ?? []).map((block, i) => {
+      // `group` en los datos permite reasignar un bloque (ej. un spec que es una decisión)
+      const own = block.group ?? BLOCK_GROUPS[block.type];
+      if (own && own !== group) run += 1;
+      group = own ?? group;
+      const counter = COUNTER_KEY[block.type] ?? block.type;
+      const index = counts[counter] ?? 0;
+      counts[counter] = index + 1;
+      const side = ALTERNATING.has(block.type) ? alt++ : 0;
+      return { block, id: `block-${i}`, group, run: String(Math.max(run, 0)), index, alt: side, indexed: Boolean(own) };
+    });
+  }, [project.blocks]);
 
-  // Imágenes restantes de la galería (sin repetir la del hero), distribuidas
-  // a lo largo del contenido en vez de amontonadas en un único bloque final.
-  const galleryAfterHero = gallery.filter((src) => src !== heroImage);
-  const overviewImage    = galleryAfterHero[0] ?? null;
-  const bannerImage      = galleryAfterHero[1] ?? null;
-  const mosaicImages     = galleryAfterHero.slice(2);
+  /* Índice lateral: un ítem por grupo, en el orden en que aparece */
+  const groupLabels = {
+    overview:   tx.overview,
+    features:   tx.features,
+    flow:       tx.flow,
+    decisions:  tx.decisions,
+    system:     tx.system,
+    compare:    tx.compare,
+    research:   tx.research,
+    highlights: tx.highlights,
+    gallery:    tx.gallery,
+  };
+  // Una entrada por tramo: si un grupo vuelve a aparecer más abajo, suma otra entrada
+  // en vez de hacer saltar el índice hacia atrás.
+  const sections = [];
+  blocks.forEach(({ id, group, run, indexed }) => {
+    if (indexed && !sections.some((s) => s.run === run)) {
+      sections.push({ run, group, id, label: groupLabels[group] });
+    }
+  });
 
-  const prevTitle = prevProject
-    ? (lang === 'en' && prevProject.en ? prevProject.en.title : prevProject.title) : null;
-  const nextTitle = nextProject
-    ? (lang === 'en' && nextProject.en ? nextProject.en.title : nextProject.title) : null;
+  const [activeGroup, setActiveGroup] = useState(sections[0]?.run ?? null);
+  const blockIdsKey = blocks.map((b) => b.id).join(',');
 
-  const sections = [
-    { id: 'overview', label: lang === 'en' ? 'Overview' : 'Resumen' },
-    ...(process?.length > 0 ? [{ id: 'process', label: lang === 'en' ? 'Process' : 'Proceso' }] : []),
-    ...(results?.length > 0 ? [{ id: 'results', label: lang === 'en' ? 'Results' : 'Resultados' }] : []),
-    ...(mosaicImages.length > 0 ? [{ id: 'gallery', label: lang === 'en' ? 'Gallery' : 'Galería' }] : []),
-  ];
-  const sectionIdsKey = sections.map((s) => s.id).join(',');
-
-  const [activeSection, setActiveSection] = useState('overview');
-
+  /* Sección activa según el scroll: el último bloque cuyo inicio pasó el 35% del
+     viewport. Al llegar al final de la página se marca el último bloque, aunque
+     sea corto y nunca alcance esa línea. */
   useEffect(() => {
-    const ids = sectionIdsKey.split(',').filter(Boolean);
-    const els = ids.map((id) => document.getElementById(id)).filter(Boolean);
+    const els = blockIdsKey.split(',').filter(Boolean)
+      .map((id) => document.getElementById(id)).filter(Boolean);
     if (!els.length) return undefined;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
+    let frame = null;
+    const update = () => {
+      frame = null;
+      const line = window.innerHeight * 0.35;
+      const atBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      let current = els[0];
+      if (atBottom) {
+        current = els[els.length - 1];
+      } else {
+        els.forEach((el) => {
+          if (el.getBoundingClientRect().top <= line) current = el;
         });
-      },
-      { rootMargin: '-35% 0px -55% 0px', threshold: 0 }
-    );
-    els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [sectionIdsKey]);
+      }
+      setActiveGroup(current.dataset.run);
+    };
+    const onScroll = () => {
+      if (frame === null) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
+  }, [blockIdsKey]);
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  /* Panel lateral plegable (solo desktop); la preferencia se recuerda en este navegador */
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => {
+    try { setCollapsed(localStorage.getItem(PANEL_KEY) === '1'); } catch {}
+  }, []);
+  const togglePanel = () => {
+    setCollapsed((prev) => {
+      const next = !prev;
+      try { localStorage.setItem(PANEL_KEY, next ? '1' : '0'); } catch {}
+      return next;
+    });
+  };
+
+  /* Lightbox: todas las imágenes de los bloques, en orden y sin repetir */
+  const lightboxItems = useMemo(() => {
+    const seen = new Set();
+    const items = [];
+    (project.blocks ?? []).forEach((block) => {
+      blockImages(block).forEach((img) => {
+        const media = toMedia(img, lang, title);
+        if (media?.src && !seen.has(media.src)) {
+          seen.add(media.src);
+          items.push(media);
+        }
+      });
+    });
+    return items;
+  }, [project.blocks, lang, title]);
+
   const [lightboxIndex, setLightboxIndex] = useState(null);
-  const openLightbox = (src) => setLightboxIndex(gallery.indexOf(src));
+  const openLightbox  = (src) => setLightboxIndex(Math.max(0, lightboxItems.findIndex((m) => m.src === src)));
   const closeLightbox = () => setLightboxIndex(null);
-  const showPrev = () => setLightboxIndex((i) => (i - 1 + gallery.length) % gallery.length);
-  const showNext = () => setLightboxIndex((i) => (i + 1) % gallery.length);
+  const showPrev = () => setLightboxIndex((i) => (i - 1 + lightboxItems.length) % lightboxItems.length);
+  const showNext = () => setLightboxIndex((i) => (i + 1) % lightboxItems.length);
 
   useEffect(() => {
     if (lightboxIndex === null) return undefined;
+    const count = lightboxItems.length;
 
     const onKeyDown = (e) => {
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') showPrev();
-      if (e.key === 'ArrowRight') showNext();
+      if (e.key === 'Escape') setLightboxIndex(null);
+      if (e.key === 'ArrowLeft') setLightboxIndex((i) => (i - 1 + count) % count);
+      if (e.key === 'ArrowRight') setLightboxIndex((i) => (i + 1) % count);
     };
     document.addEventListener('keydown', onKeyDown);
 
@@ -287,292 +296,117 @@ export default function ProjectPageContent({ project }) {
       document.removeEventListener('keydown', onKeyDown);
       document.body.style.overflow = prevOverflow;
     };
-  }, [lightboxIndex, gallery.length]);
+  }, [lightboxIndex, lightboxItems.length]);
+
+  const ctx = { lang, tx, openLightbox, isWeb: ['Website Design', 'E-learning'].includes(project.category) };
+  const prevTitle = prevProject ? loc(prevProject.title, lang) : null;
+  const nextTitle = nextProject ? loc(nextProject.title, lang) : null;
 
   return (
     <main className="min-h-screen bg-base text-white">
 
+      <ProjectHero
+        slug={project.slug}
+        title={title}
+        tagline={tagline}
+        categoryLabel={categoryLabel}
+        metaLine={metaLine}
+        projectNum={projectNum}
+        sector={loc(project.sector, lang)}
+        image={heroMedia(project, lang)}
+        card={heroCard(project, lang)}
+        link={link}
+        facts={facts}
+        labels={tx}
+      />
+
       {/* ══════════════════════════════════════════
-          HERO
+          CASO DE ESTUDIO — sidebar + bloques
       ══════════════════════════════════════════ */}
-      <section className="relative h-screen min-h-screen flex flex-col justify-center overflow-hidden
-        px-6 sm:px-12 lg:px-20 xl:px-28 pt-24 pb-20">
+      <div className="border-t border-line px-6 sm:px-12 lg:px-20 xl:px-28 py-16 lg:py-24">
+        <div className={`flex flex-col lg:flex-row gap-14 ${collapsed ? 'lg:gap-10' : 'lg:gap-12 xl:gap-16'}`}>
 
-        {heroImage && (
-          <>
-            <div className="absolute inset-0 z-0 pointer-events-none select-none" aria-hidden>
-              <Image
-                src={heroImage}
-                alt=""
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover"
-              />
-            </div>
-            <div
-              className="absolute inset-0 z-[1] pointer-events-none select-none"
-              aria-hidden
-              style={{
-                background:
-                  'linear-gradient(180deg, rgba(13,7,9,0.55) 0%, rgba(13,7,9,0.82) 55%, rgba(13,7,9,0.97) 100%), rgba(13,7,9,0.35)',
-              }}
-            />
-          </>
-        )}
-
-        <div className="absolute inset-0 z-[2] pointer-events-none select-none" aria-hidden>
-          <div className="absolute top-1/3 right-[-10%] w-[50vw] h-[50vw] max-w-[700px]
-            rounded-full bg-accent/[0.06] blur-[130px]" />
-          <div className="absolute bottom-0 left-[10%] w-[35vw] h-[35vw] max-w-[500px]
-            rounded-full bg-accent/[0.04] blur-[100px]" />
-        </div>
-
-        <div
-          className="absolute inset-0 z-[2] pointer-events-none select-none opacity-[0.03]"
-          aria-hidden
-          style={{
-            backgroundImage:
-              'linear-gradient(#F43F5E 1px, transparent 1px), linear-gradient(90deg, #F43F5E 1px, transparent 1px)',
-            backgroundSize: '80px 80px',
-          }}
-        />
-
-        <span
-          className="absolute right-0 top-1/2 -translate-y-1/2 font-montserrat font-black
-            text-white/[0.03] select-none pointer-events-none leading-none z-[2]"
-          style={{ fontSize: 'clamp(10rem, 35vw, 28rem)' }}
-          aria-hidden
-        >
-          {projectNum}
-        </span>
-
-        <div className="absolute top-20 left-6 sm:left-12 lg:left-20 xl:left-28 z-10">
-          <Link
-            href="/#projects"
-            className="group flex items-center gap-2 font-mono text-[11px] hero-muted
-              hover:text-accent transition-colors duration-300 tracking-widest"
+          {/* ── Sidebar (plegable en desktop) ── */}
+          <aside
+            className={`lg:sticky lg:top-24 lg:self-start flex-shrink-0 transition-[width] duration-300
+              ${collapsed ? 'lg:w-[170px]' : 'lg:w-[200px] xl:w-[210px]'}`}
           >
-            <FaArrowLeft size={10}
-              className="group-hover:-translate-x-1 transition-transform duration-300" />
-            {tx.back}
-          </Link>
-        </div>
+            <button
+              type="button"
+              onClick={togglePanel}
+              aria-expanded={!collapsed}
+              aria-controls="project-panel"
+              aria-label={collapsed ? tx.showPanel : tx.hidePanel}
+              title={collapsed ? tx.showPanel : tx.hidePanel}
+              className="hidden lg:flex items-center justify-center w-10 h-10 mb-6 rounded border border-line
+                text-muted hover:text-accent hover:border-accent/50 transition-colors duration-300"
+            >
+              {collapsed ? <FaChevronRight size={12} /> : <FaChevronLeft size={12} />}
+            </button>
 
-        <div className="relative z-10">
-          <FadeIn delay={0.05}>
-            <span className="inline-block font-mono text-[10px] tracking-[4px] uppercase
-              hero-accent border hero-border-accent-50 px-3 py-1 rounded-sm mb-8 lg:mb-10">
-              {project.category}
-            </span>
-          </FadeIn>
-
-          <div className="overflow-hidden">
-            <FadeIn delay={0.15}>
-              <h1
-                className="font-montserrat leading-[0.88] tracking-tight"
-                style={{ fontSize: 'clamp(2.8rem, 10vw, 8.5rem)' }}
-              >
-                <span className="block font-black hero-white uppercase">{content.title}</span>
-              </h1>
-            </FadeIn>
-          </div>
-
-          <FadeIn delay={0.3}>
-            <div className="flex items-center gap-4 mt-6 lg:mt-8">
-              <div className="h-px w-16 sm:w-24 bg-accent/50" />
-              <p className="font-mono text-[10px] sm:text-xs hero-muted tracking-[3px] uppercase">
-                {role}
-              </p>
-            </div>
-          </FadeIn>
-
-          {hasUrl && (
-            <FadeIn delay={0.42}>
-              <div className="mt-10 lg:mt-14">
-                <a
-                  href={siteUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative font-mono text-[11px] tracking-[3px] uppercase
-                    border hero-border-accent hero-white px-7 py-3 rounded overflow-hidden
-                    inline-flex hover:text-base transition-colors duration-300"
-                >
-                  <span className="relative z-10 flex items-center gap-2">
-                    {tx.viewSite}
-                    <FaExternalLinkAlt size={10}
-                      className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </span>
-                  <span className="absolute inset-0 hero-bg-accent translate-x-[-101%]
-                    group-hover:translate-x-0 transition-transform duration-300 ease-out" />
-                </a>
-              </div>
-            </FadeIn>
-          )}
-        </div>
-
-        <div className="absolute inset-x-0 bottom-0 z-10">
-          <div className="px-6 sm:px-12 lg:px-20 xl:px-28 pb-5 flex items-center gap-3 hero-muted">
-            <div className="w-px h-8 hero-bg-line relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-full hero-bg-accent
-                animate-[scrollDown_1.8s_ease-in-out_infinite]" />
-            </div>
-            <span className="font-mono text-[9px] tracking-[4px] uppercase">scroll</span>
-          </div>
-
-          {/* ── Metadata strip ── */}
-          <div className="border-t hero-border-line bg-surface/90 backdrop-blur-sm">
-            <div className="px-6 sm:px-12 lg:px-20 xl:px-28
-              grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 hero-divide-line">
-
-              {/* Cliente */}
-              <div className="py-5 px-6 first:pl-0">
-                <p className="font-mono text-[11px] hero-muted tracking-[3px] uppercase mb-2">
-                  {lang === 'en' ? 'Client' : 'Cliente'}
-                </p>
-                <p className="font-montserrat font-semibold hero-white text-base">
-                  {client}
-                </p>
-              </div>
-
-              {/* Año */}
-              <div className="py-5 px-6">
-                <p className="font-mono text-[11px] hero-muted tracking-[3px] uppercase mb-2">
-                  {lang === 'en' ? 'Year' : 'Año'}
-                </p>
-                <p className="font-montserrat font-semibold hero-white text-base">
-                  {project.year ?? '—'}
-                </p>
-              </div>
-
-              {/* Rol */}
-              <div className="py-5 px-6">
-                <p className="font-mono text-[11px] hero-muted tracking-[3px] uppercase mb-2">
-                  {lang === 'en' ? 'Role' : 'Rol'}
-                </p>
-                <p className="font-montserrat font-semibold hero-white text-base">{role}</p>
-              </div>
-
-              {/* URL */}
-              <div className="py-5 px-6 lg:pr-0">
-                <p className="font-mono text-[11px] hero-muted tracking-[3px] uppercase mb-2">
-                  {lang === 'en' ? 'View site' : 'Ver sitio'}
-                </p>
-                {hasUrl ? (
-                  <a
-                    href={siteUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 font-montserrat font-semibold
-                      hero-white hover:text-accent transition-colors text-base"
-                  >
-                    {siteLabel}
-                    <FaExternalLinkAlt size={10} />
-                  </a>
-                ) : (
-                  <p className="font-montserrat font-semibold hero-muted text-base">—</p>
-                )}
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        <style>{`
-          @keyframes scrollDown {
-            0%   { transform: translateY(-100%); }
-            100% { transform: translateY(200%); }
-          }
-          /* El hero siempre va sobre una imagen oscura: estos colores se
-             mantienen fijos sin importar el tema claro/oscuro del sitio. */
-          .hero-white          { color: #FFFFFF; }
-          .hero-muted          { color: #9D8B8E; }
-          .hero-accent         { color: #F43F5E; }
-          .hero-bg-accent      { background-color: #F43F5E; }
-          .hero-bg-line        { background-color: #2D1519; }
-          .hero-border-accent      { border-color: #F43F5E; }
-          .hero-border-accent-50   { border-color: rgba(244,63,94,0.5); }
-          .hero-border-line        { border-color: #2D1519; }
-          .hero-divide-line > :not([hidden]) ~ :not([hidden]) { border-color: #2D1519; }
-        `}</style>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          CASO DE ESTUDIO — sidebar + contenido
-      ══════════════════════════════════════════ */}
-      <div className="px-6 sm:px-12 lg:px-20 xl:px-28 py-16 lg:py-24">
-        <div className="flex flex-col lg:flex-row gap-14 lg:gap-16 xl:gap-24">
-
-          {/* ── Sidebar ── */}
-          <aside className="lg:sticky lg:top-24 lg:self-start lg:w-[240px] xl:w-[280px] flex-shrink-0">
-            <FadeIn>
-              <div className="flex items-baseline gap-3 mb-8">
-                <span className="font-montserrat font-black text-accent leading-none text-4xl">
-                  {projectNum}
-                </span>
-                <span className="font-mono text-[10px] text-muted tracking-[3px] uppercase">
-                  {lang === 'en' ? 'of' : 'de'} {String(allProjects.length).padStart(2, '0')}
-                </span>
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={0.05}>
-              <div className="flex flex-col divide-y divide-line/60 border-y border-line/60 mb-10">
-                <FactRow label={lang === 'en' ? 'Client' : 'Cliente'}>{client}</FactRow>
-                <FactRow label={lang === 'en' ? 'Year' : 'Año'}>{project.year ?? '—'}</FactRow>
-                <FactRow label={lang === 'en' ? 'Role' : 'Rol'}>{role}</FactRow>
-                <FactRow label={lang === 'en' ? 'View site' : 'Ver sitio'}>
-                  {hasUrl ? (
-                    <a
-                      href={siteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-white
-                        hover:text-accent transition-colors"
+            {/* Plegado: solo el índice (número y nombre), sin los datos del proyecto */}
+            {collapsed && sections.length > 1 && (
+              <nav className="hidden lg:flex flex-col gap-0.5" aria-label={tx.sections}>
+                {sections.map((s, i) => {
+                  const isActive = activeGroup === s.run;
+                  return (
+                    <button
+                      key={s.run}
+                      type="button"
+                      onClick={() => scrollToSection(s.id)}
+                      aria-current={isActive ? 'true' : undefined}
+                      className={`group flex items-center gap-2.5 py-1.5 text-left font-mono text-xs
+                        transition-colors duration-300
+                        ${isActive ? 'text-accent' : 'text-primary/70 hover:text-primary'}`}
                     >
-                      {siteLabel}
-                      <FaExternalLinkAlt size={9} />
-                    </a>
-                  ) : (
-                    <span className="text-muted">—</span>
-                  )}
-                </FactRow>
-              </div>
-            </FadeIn>
-
-            {hasTags && (
-              <FadeIn delay={0.1}>
-                <div className="mb-10">
-                  <SectionLabel text="// stack" />
-                  <div className="flex flex-col gap-5">
-                    {project.tags.map((tag) => (
-                      <SkillBar key={tag.name} name={tag.name} percentage={tag.percentage} />
-                    ))}
-                  </div>
-                </div>
-              </FadeIn>
+                      <span className="tracking-[1px]">{String(i + 1).padStart(2, '0')}</span>
+                      <span aria-hidden className={`h-px w-4 shrink-0 ${isActive ? 'bg-accent' : 'bg-line'}`} />
+                      <span className="tracking-[1px] uppercase truncate">{s.label}</span>
+                    </button>
+                  );
+                })}
+              </nav>
             )}
 
-            {sections.length > 1 && (
-              <FadeIn delay={0.15}>
-                <nav className="flex flex-col gap-1" aria-label={lang === 'en' ? 'Sections' : 'Secciones'}>
+            <div id="project-panel" className={collapsed ? 'lg:hidden' : ''}>
+              <div className="flex items-baseline gap-3 mb-8 pb-6 border-b border-line">
+                <span className="font-montserrat font-black text-accent leading-none text-3xl">{projectNum}</span>
+                <span className="font-mono text-xs text-muted tracking-[2px] uppercase">
+                  {tx.of} {String(allProjects.length).padStart(2, '0')}
+                </span>
+              </div>
+
+              {stack.length > 0 && (
+                <div className="mb-8">
+                  <SectionLabel text="// stack" />
+                  <ul className="flex flex-wrap gap-1.5">
+                    {stack.map((tag) => (
+                      <li key={tag} className="font-mono text-xs text-primary/85 border border-line rounded px-2.5 py-1">
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {sections.length > 1 && (
+                <nav className="hidden lg:flex flex-col gap-0.5" aria-label={tx.sections}>
                   {sections.map((s, i) => {
-                    const isActive = activeSection === s.id;
+                    const isActive = activeGroup === s.run;
                     return (
                       <button
-                        key={s.id}
+                        key={s.run}
                         type="button"
                         onClick={() => scrollToSection(s.id)}
-                        className="group flex items-center gap-3 py-2 text-left"
+                        aria-current={isActive ? 'true' : undefined}
+                        className="group flex items-center gap-2.5 py-1.5 text-left"
                       >
-                        <span className={`font-mono text-[10px] tracking-[2px] transition-colors
-                          duration-300 ${isActive ? 'text-accent' : 'text-primary/70'}`}>
+                        <span className={`font-mono text-xs tracking-[1px] transition-colors duration-300
+                          ${isActive ? 'text-accent' : 'text-primary/70'}`}>
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <span className={`h-px flex-1 transition-colors duration-300
-                          ${isActive ? 'bg-accent' : 'bg-line'}`} />
-                        <span className={`font-mono text-[10px] tracking-[3px] uppercase
-                          transition-colors duration-300
+                        <span className={`h-px w-4 shrink-0 transition-colors duration-300 ${isActive ? 'bg-accent' : 'bg-line'}`} />
+                        <span className={`font-mono text-xs tracking-[1px] uppercase truncate transition-colors duration-300
                           ${isActive ? 'text-accent' : 'text-primary/70 group-hover:text-primary'}`}>
                           {s.label}
                         </span>
@@ -580,127 +414,18 @@ export default function ProjectPageContent({ project }) {
                     );
                   })}
                 </nav>
-              </FadeIn>
-            )}
+              )}
+            </div>
           </aside>
 
-          {/* ── Contenido ── */}
-          <div className="flex-1 min-w-0 flex flex-col gap-20 lg:gap-28">
-
-            {/* Overview */}
-            <section id="overview" className="scroll-mt-24">
-              <SectionLabel text="// overview" />
-              <div className={`grid grid-cols-1 items-start ${
-                overviewImage ? 'lg:grid-cols-2 gap-10 lg:gap-14' : ''}`}>
-                <div className={overviewImage ? '' : 'max-w-[70ch]'}>
-                  <p className="font-montserrat font-semibold text-white text-xl lg:text-2xl
-                    leading-snug mb-6">
-                    {content.subtitle}
-                  </p>
-                  <p className="font-mono text-sm text-muted leading-[2.2]">
-                    {content.description}
-                  </p>
-                </div>
-                {overviewImage && (
-                  <div className="relative rounded-lg overflow-hidden border border-line
-                    hover:border-accent/30 transition-colors duration-300 aspect-[4/3]">
-                    <MediaTile
-                      src={overviewImage}
-                      alt={`${content.title} — overview`}
-                      onClick={() => openLightbox(overviewImage)}
-                    />
-                  </div>
-                )}
-              </div>
-            </section>
-
-            {/* Proceso */}
-            {process?.length > 0 && (
-              <section id="process" className="scroll-mt-24">
-                <SectionLabel text={lang === 'en' ? '// process' : '// proceso'} />
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {process.map((step) => (
-                    <div
-                      key={step.num}
-                      className="border border-line rounded p-6 hover:border-accent/30
-                        transition-colors duration-300"
-                    >
-                      <p className="font-mono text-xs text-accent tracking-[3px] mb-4">
-                        {step.num} —
-                      </p>
-                      <p className="font-montserrat font-semibold text-white text-base mb-3">
-                        {step.title}
-                      </p>
-                      <p className="font-mono text-sm text-muted leading-[1.8]">
-                        {step.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+          {/* ── Bloques ── */}
+          {/* Espacio fijo entre bloques: 96px en móvil, 160px en desktop */}
+          <div className="flex-1 min-w-0 max-w-[1200px] flex flex-col gap-24 lg:gap-40">
+            {blocks.map(({ block, id, run, index, alt }) => (
+              <section key={id} id={id} data-run={run} className="scroll-mt-24">
+                <ProjectBlock block={block} ctx={ctx} index={index} alt={alt} title={title} />
               </section>
-            )}
-
-            {/* Imagen de banner, integrada entre secciones */}
-            {bannerImage && (
-              <div className="relative rounded-lg overflow-hidden border border-line
-                hover:border-accent/30 transition-colors duration-300
-                aspect-[16/9] lg:aspect-[21/9]">
-                <MediaTile
-                  src={bannerImage}
-                  alt={`${content.title} — detalle`}
-                  onClick={() => openLightbox(bannerImage)}
-                />
-              </div>
-            )}
-
-            {/* Resultados */}
-            {results?.length > 0 && (
-              <section id="results" className="scroll-mt-24">
-                <SectionLabel text={lang === 'en' ? '// results' : '// resultados'} />
-                <div className="grid grid-cols-3 border border-line rounded overflow-hidden divide-x divide-line">
-                  {results.map((item) => (
-                    <div key={item.label} className="py-10 px-6 text-center">
-                      <p
-                        className="font-montserrat font-black text-white leading-none mb-3"
-                        style={{ fontSize: 'clamp(1.8rem, 5vw, 3rem)' }}
-                      >
-                        {item.value}
-                      </p>
-                      <p className="font-mono text-[9px] text-muted tracking-[3px] uppercase">
-                        {item.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Galería — el resto de las imágenes */}
-            {mosaicImages.length > 0 && (
-              <section id="gallery" className="scroll-mt-24">
-                <SectionLabel text={lang === 'en' ? '// gallery' : '// galería'} />
-                <div className="grid grid-cols-4 sm:grid-cols-6 auto-rows-[70px] sm:auto-rows-[90px]
-                  [grid-auto-flow:dense] gap-2">
-                  {mosaicImages.map((src, i) => {
-                    const span = GALLERY_SPANS[i % GALLERY_SPANS.length];
-                    return (
-                      <div
-                        key={src}
-                        className={`relative overflow-hidden rounded border border-line
-                          hover:border-accent/30 transition-colors duration-300 bg-base ${span}`}
-                      >
-                        <MediaTile
-                          src={src}
-                          alt={`${content.title} — ${i + 1}`}
-                          onClick={() => openLightbox(src)}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
-
+            ))}
           </div>
         </div>
       </div>
@@ -712,16 +437,15 @@ export default function ProjectPageContent({ project }) {
         {prevProject ? (
           <Link
             href={`/projects/${prevProject.slug}`}
+            onClick={() => trackEvent('project_click', { slug: prevProject.slug, from: 'prev' })}
             className="group px-6 sm:px-12 lg:px-20 xl:px-28 py-7 flex items-center gap-4
               hover:bg-surface transition-colors duration-300"
           >
             <FaArrowLeft size={12} className="text-muted flex-shrink-0
               group-hover:-translate-x-1 group-hover:text-accent transition-all duration-300" />
             <span>
-              <span className="block font-mono text-[9px] text-line tracking-[3px] uppercase mb-1">
-                {lang === 'en' ? 'Previous' : 'Anterior'}
-              </span>
-              <span className="font-montserrat font-semibold text-white text-sm sm:text-[1rem]
+              <span className="block font-mono text-xs text-muted tracking-[2px] uppercase mb-1">{tx.previous}</span>
+              <span className="font-montserrat font-semibold text-white text-[1rem]/6 sm:text-lg
                 group-hover:text-accent transition-colors duration-300">
                 {prevTitle}
               </span>
@@ -732,14 +456,13 @@ export default function ProjectPageContent({ project }) {
         {nextProject ? (
           <Link
             href={`/projects/${nextProject.slug}`}
+            onClick={() => trackEvent('project_click', { slug: nextProject.slug, from: 'next' })}
             className="group px-6 sm:px-12 lg:px-20 xl:px-28 py-7 flex items-center
               justify-end gap-4 text-right hover:bg-surface transition-colors duration-300"
           >
             <span>
-              <span className="block font-mono text-[9px] text-line tracking-[3px] uppercase mb-1">
-                {lang === 'en' ? 'Next' : 'Siguiente'}
-              </span>
-              <span className="font-montserrat font-semibold text-white text-sm sm:text-[1rem]
+              <span className="block font-mono text-xs text-muted tracking-[2px] uppercase mb-1">{tx.next}</span>
+              <span className="font-montserrat font-semibold text-white text-[1rem]/6 sm:text-lg
                 group-hover:text-accent transition-colors duration-300">
                 {nextTitle}
               </span>
@@ -753,16 +476,11 @@ export default function ProjectPageContent({ project }) {
       {/* ══════════════════════════════════════════
           FOOTER
       ══════════════════════════════════════════ */}
-      <div className="border-t border-line px-6 sm:px-12 lg:px-20 xl:px-28 py-8
-        flex items-center justify-between gap-4">
-        <Link href="/#projects"
-          className="font-mono text-[11px] text-muted hover:text-accent
-            transition-colors tracking-widest">
+      <div className="border-t border-line px-6 sm:px-12 lg:px-20 xl:px-28 py-8 flex items-center justify-between gap-4">
+        <Link href="/#projects" className="font-mono text-xs text-muted hover:text-accent transition-colors tracking-[2px]">
           {tx.allProjects}
         </Link>
-        <Link href="/contactform"
-          className="font-mono text-[11px] text-muted hover:text-accent
-            transition-colors tracking-widest">
+        <Link href="/#contact" className="font-mono text-xs text-muted hover:text-accent transition-colors tracking-[2px]">
           {tx.workTogether}
         </Link>
       </div>
@@ -770,16 +488,15 @@ export default function ProjectPageContent({ project }) {
       <AnimatePresence>
         {lightboxIndex !== null && (
           <Lightbox
-            items={gallery}
+            items={lightboxItems}
             index={lightboxIndex}
-            title={content.title}
+            labels={tx}
             onClose={closeLightbox}
             onPrev={showPrev}
             onNext={showNext}
           />
         )}
       </AnimatePresence>
-
     </main>
   );
 }

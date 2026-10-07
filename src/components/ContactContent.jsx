@@ -1,18 +1,12 @@
 'use client';
 import React from 'react';
-import Link from 'next/link';
 import { FormContact } from '@/components/formContact';
 import FadeIn from '@/components/FadeIn';
-import { FaGithub, FaBehance, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { useLanguage } from '@/context/LanguageContext';
 import { tr } from '@/lib/translations';
-
-const socials = [
-  { href: 'https://github.com/mpvilamarin',                      icon: FaGithub   },
-  { href: 'https://www.behance.net/marapvillama',                icon: FaBehance  },
-  { href: 'https://www.linkedin.com/in/maria-paula-villamarin/', icon: FaLinkedin },
-  { href: 'https://wa.me/5491164117527',                         icon: FaWhatsapp },
-];
+import { EMAIL, SOCIALS } from '@/lib/site';
+import { socialIcons } from '@/lib/socialIcons';
+import { trackEvent } from '@/lib/analytics';
 
 export default function ContactContent() {
   const { lang } = useLanguage();
@@ -32,7 +26,7 @@ export default function ContactContent() {
       <section className="relative z-10 flex-1 flex flex-col justify-center">
 
         <FadeIn delay={0.05}>
-          <p className="font-mono text-[11px] text-muted tracking-[5px] mb-6">
+          <p className="font-mono text-xs sm:text-sm text-muted tracking-[3px] mb-6">
             <span className="text-accent">// </span>{tx.label.replace('// ', '')}
           </p>
         </FadeIn>
@@ -47,43 +41,46 @@ export default function ContactContent() {
         </FadeIn>
 
         <FadeIn delay={0.25}>
-          <p className="font-mono text-xs sm:text-sm text-muted leading-[1.9] max-w-[80%]">
+          <p className="font-montserrat text-[1rem]/6 sm:text-lg text-muted leading-relaxed max-w-xl">
             {tx.desc}
           </p>
         </FadeIn>
 
-        <FadeIn delay={0.35}>
-          <Link
-            href="https://wa.me/5491164117527"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <button className="group relative mt-8 font-mono text-[11px] tracking-[3px] uppercase
-              border border-accent text-white px-7 py-3 rounded overflow-hidden
-              hover:text-base transition-colors duration-300">
-              <span className="relative z-10 flex items-center gap-2">
-                {tx.cta} <span className="group-hover:translate-x-1 inline-block transition-transform">↗</span>
-              </span>
-              <span className="absolute inset-0 bg-accent translate-x-[-101%]
-                group-hover:translate-x-0 transition-transform duration-300 ease-out" />
-            </button>
-          </Link>
+        <FadeIn delay={0.2}>
+          <div className="mt-8">
+            <p className="font-mono text-xs text-muted tracking-[2px] uppercase mb-2">{tx.emailLabel}</p>
+            <a
+              href={`mailto:${EMAIL}`}
+              onClick={() => trackEvent('email_click', { from: 'contact' })}
+              className="group inline-flex items-center gap-2 font-montserrat font-bold text-white text-xl sm:text-2xl
+                hover:text-accent transition-colors duration-300 break-all
+                border-b-2 border-accent/60 hover:border-accent pb-1"
+            >
+              {EMAIL}
+              <span aria-hidden className="text-accent group-hover:translate-x-1 transition-transform">↗</span>
+            </a>
+          </div>
         </FadeIn>
 
         {/* Social icons */}
-        <FadeIn delay={0.45}>
+        <FadeIn delay={0.25}>
           <div className="flex items-center gap-5 mt-10 pt-10 border-t border-line">
-            {socials.map(({ href, icon: Icon }, i) => (
-              <Link
-                key={i}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted hover:text-accent transition-colors duration-300"
-              >
-                <Icon size={15} />
-              </Link>
-            ))}
+            {SOCIALS.map(({ key, name, href }) => {
+              const Icon = socialIcons[key];
+              return (
+                <a
+                  key={key}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={name}
+                  onClick={() => trackEvent('social_click', { network: key, from: 'contact' })}
+                  className="text-muted hover:text-accent transition-colors duration-300 p-1"
+                >
+                  <Icon size={18} />
+                </a>
+              );
+            })}
           </div>
         </FadeIn>
       </section>

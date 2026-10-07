@@ -7,6 +7,8 @@ import LightbulbToggle from './LightbulbToggle';
 import LanguageToggle from './LanguageToggle';
 import { useLanguage } from '@/context/LanguageContext';
 import { tr } from '@/lib/translations';
+import { CV_LINKS } from '@/lib/site';
+import { trackEvent } from '@/lib/analytics';
 
 const navLinksBase = [
   { href: '/#about',      key: 'about',    num: '01' },
@@ -14,10 +16,6 @@ const navLinksBase = [
   { href: '/contactform', key: 'contact',  num: '03' },
 ];
 
-const cvLinks = [
-  { href: 'https://drive.google.com/file/d/10llwvk38XZ80RsRpwt7MFKNmIVhVUPJp/view?usp=sharing', label: 'English' },
-  { href: 'https://drive.google.com/file/d/1PtBtuDM-FsxTmfI0F50EyOC8PuIPTXZZ/view?usp=sharing', label: 'Español' },
-];
 
 const Navbar = () => {
   const [openMenu, setOpenMenu]     = useState(false);
@@ -44,20 +42,20 @@ const Navbar = () => {
         {/* Logo */}
         <Link
           href="/"
-          className="font-mono text-xs text-muted hover:text-accent transition-colors duration-300 tracking-[4px]"
+          className="font-mono text-sm text-muted hover:text-accent transition-colors duration-300 tracking-[3px]"
         >
           PV<span className="text-accent">.</span>
         </Link>
 
         {/* Links */}
-        <ul className="flex items-center gap-10 font-mono text-[11px] tracking-[3px]">
+        <ul className="flex items-center gap-10 font-mono text-xs tracking-[2px]">
           {navLinks.map(({ href, label, num }) => (
             <li key={href}>
               <Link
                 href={href}
                 className="relative group flex items-center gap-1.5 text-muted hover:text-white transition-colors duration-300"
               >
-                <span className="text-accent text-[9px]">{num}/</span>
+                <span className="text-accent text-xs">{num}/</span>
                 {label}
                 <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-accent group-hover:w-full transition-all duration-300" />
               </Link>
@@ -66,24 +64,27 @@ const Navbar = () => {
 
           {/* CV dropdown */}
           <li className="relative group">
-            <button className="flex items-center gap-1.5 text-muted hover:text-white transition-colors duration-300 text-[11px] tracking-[3px]">
-              <span className="text-accent text-[9px]">04/</span>
+            <button className="flex items-center gap-1.5 text-muted hover:text-white transition-colors duration-300 text-xs tracking-[2px]"
+              aria-haspopup="true">
+              <span className="text-accent text-xs">04/</span>
               CV
-              <FaChevronDown className="text-[9px] transition-transform duration-300 group-hover:rotate-180" />
+              <FaChevronDown className="text-[10px] transition-transform duration-300 group-hover:rotate-180" />
             </button>
             <div className="absolute right-0 top-full mt-3 w-28 opacity-0 pointer-events-none
               group-hover:opacity-100 group-hover:pointer-events-auto
+              group-focus-within:opacity-100 group-focus-within:pointer-events-auto
               transition-all duration-300 bg-surface border border-line rounded overflow-hidden">
-              {cvLinks.map(({ href, label }) => (
-                <Link
+              {CV_LINKS.map(({ href, label, lang: cvLang }) => (
+                <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block px-4 py-3 font-mono text-[11px] text-muted hover:text-accent hover:bg-elevated transition-colors border-b border-line last:border-0"
+                  onClick={() => trackEvent('cv_open', { lang: cvLang, from: 'navbar' })}
+                  className="block px-4 py-3 font-mono text-xs text-muted hover:text-accent hover:bg-elevated transition-colors border-b border-line last:border-0"
                 >
                   {label}
-                </Link>
+                </a>
               ))}
             </div>
           </li>
@@ -101,90 +102,113 @@ const Navbar = () => {
       </nav>
 
       {/* ── Mobile nav (< lg) ───────────────────────────── */}
-      <div className="lg:hidden fixed top-4 right-4 z-50 flex items-center gap-2">
-        {/* Language toggle en mobile */}
-        <LanguageToggle />
-        {/* Bombilla toggle en mobile */}
-        <LightbulbToggle />
-
-        <button
-          onClick={() => setOpenMenu(!openMenu)}
-          className="w-9 h-9 flex items-center justify-center border border-line rounded text-muted
-            hover:text-accent hover:border-accent/50 transition-colors duration-300"
+      <header
+        className={`lg:hidden fixed top-0 inset-x-0 z-50 flex items-center justify-between
+          px-4 sm:px-6 py-3 transition-colors duration-300 border-b
+          ${scrolled || openMenu
+            ? 'bg-base/80 backdrop-blur-xl border-line'
+            : 'bg-base/60 backdrop-blur-md border-transparent'}`}
+      >
+        <Link
+          href="/"
+          onClick={() => setOpenMenu(false)}
+          className="font-mono text-sm text-muted hover:text-accent transition-colors duration-300 tracking-[3px]"
         >
-          {openMenu ? <FaTimes size={13} /> : <FaBars size={13} />}
-        </button>
+          PV<span className="text-accent">.</span>
+        </Link>
 
-        <AnimatePresence>
-          {openMenu && (
-            <motion.div
-              initial={{ opacity: 0, y: -8, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0,  scale: 1 }}
-              exit={{ opacity: 0,  y: -8, scale: 0.97 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="absolute right-0 mt-2 w-48 bg-surface border border-line rounded shadow-2xl overflow-hidden"
-            >
-              <ul className="flex flex-col font-mono text-[11px] tracking-[2px]">
-                {navLinks.map(({ href, label, num }) => (
-                  <li key={href}>
-                    <Link
-                      href={href}
-                      onClick={() => setOpenMenu(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-muted hover:text-white hover:bg-elevated transition-colors border-b border-line"
-                    >
-                      <span className="text-accent text-[9px]">{num}/</span>
-                      {label}
-                    </Link>
-                  </li>
-                ))}
+        <div className="relative flex items-center gap-2">
+          <LanguageToggle />
+          <LightbulbToggle />
 
-                {/* CV dropdown mobile */}
-                <li>
-                  <button
-                    onClick={() => setCvDropdown(!cvDropdown)}
-                    className="w-full flex items-center gap-2 px-4 py-3 text-muted hover:text-white hover:bg-elevated transition-colors"
-                  >
-                    <span className="text-accent text-[9px]">04/</span>
-                    CV
-                    <motion.span
-                      animate={{ rotate: cvDropdown ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="ml-auto"
-                    >
-                      <FaChevronDown className="text-[9px]" />
-                    </motion.span>
-                  </button>
+          <button
+            onClick={() => setOpenMenu(!openMenu)}
+            aria-label={openMenu ? (lang === 'en' ? 'Close menu' : 'Cerrar menú') : (lang === 'en' ? 'Open menu' : 'Abrir menú')}
+            aria-expanded={openMenu}
+            aria-controls="mobile-menu"
+            className="w-10 h-10 flex items-center justify-center border border-line rounded text-muted
+              hover:text-accent hover:border-accent/50 transition-colors duration-300"
+          >
+            {openMenu ? <FaTimes size={14} /> : <FaBars size={14} />}
+          </button>
 
-                  <AnimatePresence>
-                    {cvDropdown && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden bg-elevated"
+          <AnimatePresence>
+            {openMenu && (
+              <motion.div
+                id="mobile-menu"
+                initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0,  scale: 1 }}
+                exit={{ opacity: 0,  y: -8, scale: 0.97 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="absolute right-0 top-full mt-3 w-56 bg-surface border border-line rounded shadow-2xl overflow-hidden"
+              >
+                <ul className="flex flex-col font-mono text-sm tracking-[2px]">
+                  {navLinks.map(({ href, label, num }) => (
+                    <li key={href}>
+                      <Link
+                        href={href}
+                        onClick={() => setOpenMenu(false)}
+                        className="flex items-center gap-2 px-4 py-3.5 text-muted hover:text-white hover:bg-elevated transition-colors border-b border-line"
                       >
-                        {cvLinks.map(({ href, label }) => (
-                          <Link
-                            key={label}
-                            href={href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block px-8 py-2.5 font-mono text-[11px] text-muted hover:text-accent transition-colors"
-                            onClick={() => { setOpenMenu(false); setCvDropdown(false); }}
-                          >
-                            {label}
-                          </Link>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </li>
-              </ul>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+                        <span className="text-accent text-xs">{num}/</span>
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+
+                  {/* CV dropdown mobile */}
+                  <li>
+                    <button
+                      onClick={() => setCvDropdown(!cvDropdown)}
+                      aria-expanded={cvDropdown}
+                      className="w-full flex items-center gap-2 px-4 py-3.5 text-muted hover:text-white hover:bg-elevated transition-colors"
+                    >
+                      <span className="text-accent text-xs">04/</span>
+                      CV
+                      <motion.span
+                        animate={{ rotate: cvDropdown ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="ml-auto"
+                      >
+                        <FaChevronDown className="text-[10px]" />
+                      </motion.span>
+                    </button>
+
+                    <AnimatePresence>
+                      {cvDropdown && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden bg-elevated"
+                        >
+                          {CV_LINKS.map(({ href, label, lang: cvLang }) => (
+                            <a
+                              key={label}
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block px-8 py-3 font-mono text-sm text-muted hover:text-accent transition-colors"
+                              onClick={() => {
+                                trackEvent('cv_open', { lang: cvLang, from: 'navbar-mobile' });
+                                setOpenMenu(false);
+                                setCvDropdown(false);
+                              }}
+                            >
+                              {label}
+                            </a>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </li>
+                </ul>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </header>
     </>
   );
 };

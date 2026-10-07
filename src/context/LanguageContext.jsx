@@ -1,5 +1,6 @@
 'use client';
 import { createContext, useContext, useState, useEffect } from 'react';
+import { captureRef } from '@/lib/analytics';
 
 const LanguageCtx = createContext({ lang: 'es', toggle: () => {} });
 
@@ -9,7 +10,12 @@ export function LanguageProvider({ children }) {
   useEffect(() => {
     const stored = localStorage.getItem('lang');
     if (stored === 'en') setLang('en');
+    captureRef();
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   const toggle = () => {
     setLang((prev) => {

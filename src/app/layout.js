@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import CustomCursor from '@/components/CustomCursor';
 import { Analytics } from '@vercel/analytics/react';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { SITE_URL, SITE_NAME } from '@/lib/site';
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -19,8 +20,32 @@ const robotoMono = Roboto_Mono({
   display: 'swap',
 });
 
+const DEFAULT_TITLE = 'Paula Villamarín — Desarrolladora Frontend & Diseñadora';
+const DEFAULT_DESCRIPTION =
+  'Soy Paula Villamarín, desarrolladora frontend y diseñadora gráfica. Combino código y diseño para crear interfaces accesibles, interactivas y funcionales.';
+
 export const metadata = {
-  metadataBase: new URL('https://paulavillamarin.com'),
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: DEFAULT_TITLE,
+    template: `%s · ${SITE_NAME}`,
+  },
+  description: DEFAULT_DESCRIPTION,
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  openGraph: {
+    type: 'website',
+    locale: 'es_AR',
+    alternateLocale: ['en_US'],
+    siteName: SITE_NAME,
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    url: '/',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({ children }) {

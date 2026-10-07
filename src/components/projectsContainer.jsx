@@ -2,22 +2,16 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { projects } from './projectsContent';
+import { projects, loc, coverSrc } from './projectsContent';
 import FadeIn from './FadeIn';
 import { useLanguage } from '@/context/LanguageContext';
 import { tr } from '@/lib/translations';
-
-const FEATURED_SPANS = [
-  'col-span-2 row-span-2',
-  'col-span-2 row-span-1',
-  'col-span-1 row-span-1',
-  'col-span-1 row-span-1',
-];
+import { trackEvent } from '@/lib/analytics';
 
 function SubLabel({ text }) {
   return (
     <div className="flex items-center gap-4 mb-6 lg:mb-8">
-      <span className="font-mono text-[10px] text-muted tracking-[4px] uppercase whitespace-nowrap">
+      <span className="font-mono text-xs text-muted tracking-[3px] uppercase whitespace-nowrap">
         {text}
       </span>
       <div className="flex-1 h-px bg-line" />
@@ -55,8 +49,7 @@ export default function ProjectsContainer() {
   const { lang } = useLanguage();
   const tx = tr[lang].projects;
   const categories = tx.categories;
-
-  const featured = projects.filter((p) => p.frontImage).slice(0, 4);
+  const catLabels  = tr[lang].categoryLabels;
 
   const filtered = selectedCategory === 'All'
     ? projects
@@ -66,56 +59,6 @@ export default function ProjectsContainer() {
 
   return (
     <div className="w-full">
-
-      {/* ── Destacados: mosaico ──────────────────────── */}
-      <FadeIn>
-        <SubLabel text={lang === 'en' ? '// featured' : '// destacados'} />
-      </FadeIn>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 auto-rows-[130px] sm:auto-rows-[170px]
-        gap-2 mb-16 lg:mb-20">
-        {featured.map((project, i) => {
-          const title = lang === 'en' && project.en ? project.en.title : project.title;
-          const span  = FEATURED_SPANS[i % FEATURED_SPANS.length];
-          return (
-            <FadeIn key={project.slug} delay={Math.min(0.06 * i, 0.2)} className={`${span} h-full`}>
-              <Link
-                href={`/projects/${project.slug}`}
-                className="group relative block w-full h-full overflow-hidden rounded-lg
-                  border border-line hover:border-accent/30 transition-colors duration-300"
-                style={{ backgroundColor: '#150B0D' }}
-              >
-                <Image
-                  src={project.frontImage}
-                  alt={title}
-                  fill
-                  sizes="(min-width: 640px) 25vw, 50vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-                />
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{ background: 'linear-gradient(180deg, transparent 45%, rgba(13,7,9,0.85) 100%)' }}
-                />
-                <div className="absolute left-0 right-0 bottom-0 p-3 sm:p-4">
-                  <span
-                    className="font-mono text-[8px] sm:text-[9px] tracking-[3px] uppercase"
-                    style={{ color: '#F43F5E' }}
-                  >
-                    {project.category}
-                  </span>
-                  <h3
-                    className="font-montserrat font-bold uppercase leading-tight mt-1
-                      text-sm sm:text-base"
-                    style={{ color: '#FFFFFF' }}
-                  >
-                    {title}
-                  </h3>
-                </div>
-              </Link>
-            </FadeIn>
-          );
-        })}
-      </div>
 
       {/* ── Índice completo ───────────────────────────── */}
       <FadeIn>
@@ -129,7 +72,8 @@ export default function ProjectsContainer() {
             <button
               key={value}
               onClick={() => { setSelectedCategory(value); setHoverIndex(0); }}
-              className={`font-mono text-[10px] tracking-[3px] uppercase px-4 py-2 rounded
+              aria-pressed={selectedCategory === value}
+              className={`font-mono text-xs tracking-[2px] uppercase px-4 py-2.5 rounded
                 transition-all duration-300
                 ${selectedCategory === value
                   ? 'bg-accent text-base font-bold'
@@ -147,19 +91,21 @@ export default function ProjectsContainer() {
 
         <div className="flex flex-col border-t border-line">
           {filtered.map((project, i) => {
-            const title    = lang === 'en' && project.en ? project.en.title : project.title;
+            const title    = loc(project.title, lang);
             const isActive = i === hoverIndex;
             return (
               <FadeIn key={project.slug} delay={Math.min(0.04 * i, 0.24)}>
                 <Link
                   href={`/projects/${project.slug}`}
                   onMouseEnter={() => setHoverIndex(i)}
+                  onFocus={() => setHoverIndex(i)}
+                  onClick={() => trackEvent('project_click', { slug: project.slug, from: 'index' })}
                   className="group grid grid-cols-[28px_1fr_24px]
-                    sm:grid-cols-[40px_1fr_130px_110px_24px]
-                    items-center gap-2 sm:gap-4 py-3 sm:py-3.5 border-b border-line
+                    sm:grid-cols-[40px_1fr_150px_130px_24px]
+                    items-center gap-2 sm:gap-4 py-4 border-b border-line
                     transition-colors duration-300"
                 >
-                  <span className={`font-mono text-[10px] tracking-widest transition-colors duration-300
+                  <span className={`font-mono text-xs tracking-widest transition-colors duration-300
                     ${isActive ? 'text-accent' : 'text-muted'}`}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
@@ -168,12 +114,12 @@ export default function ProjectsContainer() {
                     ${isActive ? 'text-accent' : 'text-white'}`}>
                     {title}
                   </span>
-                  <span className="hidden sm:block font-mono text-xs text-muted truncate pr-2">
-                    {project.client}
+                  <span className="hidden sm:block font-mono text-sm text-muted truncate pr-2">
+                    {loc(project.meta.client, lang)}
                   </span>
-                  <span className="hidden sm:block font-mono text-[10px] text-muted
-                    tracking-widest uppercase text-right pr-2">
-                    {project.category}
+                  <span className="hidden sm:block font-mono text-xs text-muted
+                    tracking-[1px] uppercase text-right pr-2">
+                    {catLabels[project.category] ?? project.category}
                   </span>
                   <span className={`text-right text-accent transition-all duration-300
                     ${isActive ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-1'}`}>
@@ -185,7 +131,7 @@ export default function ProjectsContainer() {
           })}
 
           {filtered.length === 0 && (
-            <p className="font-mono text-xs text-muted py-10">
+            <p className="font-montserrat text-[1rem]/6 text-muted py-10">
               {lang === 'en' ? 'No projects in this category yet.' : 'Aún no hay proyectos en esta categoría.'}
             </p>
           )}
@@ -194,39 +140,40 @@ export default function ProjectsContainer() {
         {/* Preview sticky */}
         {active && (
           <div
+            aria-hidden
             className="hidden lg:block sticky top-28 rounded-lg overflow-hidden
               border border-line aspect-[4/5]"
             style={{ backgroundColor: '#150B0D' }}
           >
             <div className="relative w-full h-full">
-              {active.frontImage ? (
+              {coverSrc(active) ? (
                 <Image
                   key={active.slug}
-                  src={active.frontImage}
-                  alt={active.title}
+                  src={coverSrc(active)}
+                  alt=""
                   fill
                   sizes="320px"
                   className="object-cover"
                 />
               ) : (
-                <Placeholder letter={active.client?.[0] ?? 'P'} />
+                <Placeholder letter={loc(active.meta.client, lang)?.[0] ?? 'P'} />
               )}
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{ background: 'linear-gradient(180deg, transparent 50%, rgba(13,7,9,0.92) 100%)' }}
               />
               <div className="absolute left-0 right-0 bottom-0 p-5">
-                <span className="font-mono text-[9px] tracking-[3px] uppercase" style={{ color: '#F43F5E' }}>
+                <span className="font-mono text-xs tracking-[2px] uppercase" style={{ color: '#F43F5E' }}>
                   {lang === 'en' ? 'Preview' : 'Vista previa'}
                 </span>
-                <h4
+                <p
                   className="font-montserrat font-black uppercase leading-tight mt-2 text-xl"
                   style={{ color: '#FFFFFF' }}
                 >
-                  {lang === 'en' && active.en ? active.en.title : active.title}
-                </h4>
-                <p className="font-mono text-[11px] mt-1" style={{ color: '#9D8B8E' }}>
-                  {active.client} · {active.year}
+                  {loc(active.title, lang)}
+                </p>
+                <p className="font-mono text-sm mt-1" style={{ color: '#B8A7AA' }}>
+                  {loc(active.meta.client, lang)} · {active.meta.year}
                 </p>
               </div>
             </div>
